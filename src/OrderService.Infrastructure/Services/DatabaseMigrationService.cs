@@ -27,7 +27,7 @@ public class DatabaseMigrationService(IUnitOfWork unitOfWork, ILogger<DatabaseMi
             logger.LogInformation("Starting database migration...");
             WriteLine("Started MigrateDb");
 
-            unitOfWork.Migrate(TimeSpan.FromMinutes(7));
+            unitOfWork.Migrate(TimeSpan.FromSeconds(20));
 
             logger.LogInformation("Database migration completed successfully");
             WriteLine("Finished MigrateDb");

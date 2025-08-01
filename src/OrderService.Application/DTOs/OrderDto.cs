@@ -10,7 +10,6 @@ public record OrderDto
     public required string InvoiceEmailAddress { get; init; }
     public required string InvoiceCreditCardNumber { get; init; }
     public required DateTime CreatedAt { get; init; }
-    public required decimal TotalAmount { get; init; }
 }
 
 public record OrderItemDto

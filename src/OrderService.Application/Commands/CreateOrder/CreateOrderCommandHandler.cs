@@ -31,7 +31,7 @@ public class CreateOrderCommandHandler(
 
             var orderItems = request.OrderDto.Products.ConvertAll(p =>
                 new OrderItem(p.ProductId, p.ProductName, p.ProductAmount, p.ProductPrice));
-                
+
             var order = new Order(
                 orderNumber,
                 invoiceAddress,
@@ -42,8 +42,7 @@ public class CreateOrderCommandHandler(
             await orderRepository.AddAsync(order, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Order {OrderNumber} created successfully with total amount {TotalAmount:C}",
-                order.OrderNumber, order.TotalAmount);
+            logger.LogInformation("Order {OrderNumber} created successfully", order.OrderNumber);
 
             var orderDto = new OrderDto
             {
@@ -52,7 +51,6 @@ public class CreateOrderCommandHandler(
                 InvoiceEmailAddress = order.InvoiceEmailAddress.Value,
                 InvoiceCreditCardNumber = order.InvoiceCreditCardNumber.Value,
                 CreatedAt = order.CreatedAt,
-                TotalAmount = order.TotalAmount,
                 Products = [.. order.OrderItems.Select(item => new OrderItemDto
                 {
                     ProductId = item.ProductId,

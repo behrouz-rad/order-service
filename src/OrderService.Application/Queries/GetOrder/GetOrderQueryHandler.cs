@@ -30,7 +30,6 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository, ILogger<GetO
                 InvoiceEmailAddress = order.InvoiceEmailAddress.Value,
                 InvoiceCreditCardNumber = order.InvoiceCreditCardNumber.Value,
                 CreatedAt = order.CreatedAt,
-                TotalAmount = order.TotalAmount,
                 Products = [.. order.OrderItems.Select(item => new OrderItemDto
                 {
                     ProductId = item.ProductId,
