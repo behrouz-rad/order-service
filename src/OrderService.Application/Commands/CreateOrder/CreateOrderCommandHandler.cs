@@ -31,7 +31,7 @@ public class CreateOrderCommandHandler(
 
             var orderItems = request.OrderDto.Products.ConvertAll(p =>
                 new OrderItem(p.ProductId, p.ProductName, p.ProductAmount, p.ProductPrice));
-
+                
             var order = new Order(
                 orderNumber,
                 invoiceAddress,

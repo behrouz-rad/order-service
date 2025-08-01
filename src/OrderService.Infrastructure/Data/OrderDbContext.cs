@@ -100,7 +100,11 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
 
     public void Migrate(TimeSpan timeout)
     {
-        Database.SetCommandTimeout(timeout);
-        Database.Migrate();
+        var pendingMigrations = Database.GetPendingMigrations();
+        if (pendingMigrations.Any())
+        {
+            Database.SetCommandTimeout(timeout);
+            Database.Migrate();
+        }
     }
 }
