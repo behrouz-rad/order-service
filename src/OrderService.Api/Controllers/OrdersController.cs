@@ -10,7 +10,7 @@ namespace OrderService.Api.Controllers;
 public class OrdersController(ISender mediator, ILogger<OrdersController> logger) : OrderBaseController
 {
     [HttpPost]
-    [ProducesResponseType(typeof(OrderDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(CreateOrderResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto, CancellationToken cancellationToken)
@@ -23,7 +23,8 @@ public class OrdersController(ISender mediator, ILogger<OrdersController> logger
         if (result.IsSuccess)
         {
             logger.LogInformation("Order {OrderNumber} created successfully", result.Value.OrderNumber);
-            return CreatedAtAction(nameof(GetOrder), new { orderNumber = result.Value.OrderNumber }, result.Value);
+            var response = new CreateOrderResponseDto { OrderNumber = result.Value.OrderNumber };
+            return CreatedAtAction(nameof(GetOrder), new { orderNumber = result.Value.OrderNumber }, response);
         }
 
         return (result.Errors[0].Metadata.GetValueOrDefault("ErrorType") as ErrorType?) switch
