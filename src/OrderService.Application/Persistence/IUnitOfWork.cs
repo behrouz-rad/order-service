@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace OrderService.Domain.Common;
+namespace OrderService.Application.Persistence;
 
 public interface IUnitOfWork : IDisposable
 {

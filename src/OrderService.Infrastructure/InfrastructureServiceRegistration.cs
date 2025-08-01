@@ -3,8 +3,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.Application.Persistence;
 using OrderService.Application.Services;
-using OrderService.Domain.Common;
 using OrderService.Domain.Repositories;
 using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Repositories;

@@ -1,7 +1,7 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using Microsoft.EntityFrameworkCore;
-using OrderService.Domain.Common;
+using OrderService.Application.Persistence;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
 
