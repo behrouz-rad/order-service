@@ -1,25 +1,20 @@
-﻿// © 2025 Behrouz Rad. All rights reserved.
+﻿using OrderService.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddLogging(builder);
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddApiServices()
+                .AddApiDocumentation()
+                .AddApplicationLayers(builder.Configuration)
+                .AddPipelineBehaviors()
+                .AddGlobalExceptionHandling();
 
-var app = builder.Build();
+var app = builder.Build()
+                 .ConfigurePipeline();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+await app.MigrateDatabaseAsync();
 
-app.UseHttpsRedirection();
+await app.RunAsync();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+public partial class Program { }
