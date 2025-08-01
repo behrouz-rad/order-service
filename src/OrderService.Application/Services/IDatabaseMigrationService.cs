@@ -1,6 +1,6 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
-namespace OrderService.Infrastructure.Services;
+namespace OrderService.Application.Services;
 
 public interface IDatabaseMigrationService
 {

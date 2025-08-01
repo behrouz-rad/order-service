@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using OrderService.Application.DTOs;
 using OrderService.Application.Enums;
+using OrderService.Application.Services;
 using OrderService.Domain.Common;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
@@ -15,6 +16,7 @@ namespace OrderService.Application.Commands.CreateOrder;
 public class CreateOrderCommandHandler(
     IOrderRepository orderRepository,
     IUnitOfWork unitOfWork,
+    IStockValidationService stockValidationService,
     ILogger<CreateOrderCommandHandler> logger) : IRequestHandler<CreateOrderCommand, Result<OrderDto>>
 {
     public async Task<Result<OrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -22,6 +24,23 @@ public class CreateOrderCommandHandler(
         try
         {
             logger.LogInformation("Creating order with {ProductCount} products", request.OrderDto.Products.Count);
+
+            // Validate stock availability for all products
+            foreach (var product in request.OrderDto.Products)
+            {
+                var isInStock = await stockValidationService.IsProductInStockAsync(
+                    product.ProductId,
+                    product.ProductAmount,
+                    cancellationToken);
+
+                if (!isInStock)
+                {
+                    logger.LogWarning("Product {ProductId} ({ProductName}) is out of stock. Requested: {RequestedAmount}",
+                        product.ProductId, product.ProductName, product.ProductAmount);
+                    return Result.Fail(new Error("The product is out of stock")
+                                 .WithMetadata("ErrorType", ErrorType.ValidationError));
+                }
+            }
 
             var orderNumber = GenerateOrderNumber();
 

@@ -1,4 +1,5 @@
-﻿using OrderService.Infrastructure.Services;
+﻿using OrderService.Application.Services;
+using OrderService.Infrastructure.Services;
 using Serilog;
 
 namespace OrderService.Api.Extensions;

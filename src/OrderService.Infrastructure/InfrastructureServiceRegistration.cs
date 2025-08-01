@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.Application.Services;
 using OrderService.Domain.Common;
 using OrderService.Domain.Repositories;
 using OrderService.Infrastructure.Data;
@@ -23,6 +24,7 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<OrderDbContext>());
         services.AddScoped<IDatabaseMigrationService, DatabaseMigrationService>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IStockValidationService, StockValidationService>();
 
         return services;
     }
