@@ -23,19 +23,15 @@ public class CreateOrderCommandHandler(
         {
             logger.LogInformation("Creating order with {ProductCount} products", request.OrderDto.Products.Count);
 
-            // Generate unique order number
             var orderNumber = GenerateOrderNumber();
 
-            // Create value objects
             var invoiceAddress = new InvoiceAddress(request.OrderDto.InvoiceAddress);
             var invoiceEmailAddress = new InvoiceEmailAddress(request.OrderDto.InvoiceEmailAddress);
             var invoiceCreditCardNumber = new InvoiceCreditCardNumber(request.OrderDto.InvoiceCreditCardNumber);
 
-            // Create order items
-            var orderItems = request.OrderDto.Products.Select(p =>
-                new OrderItem(p.ProductId, p.ProductName, p.ProductAmount, p.ProductPrice)).ToList();
+            var orderItems = request.OrderDto.Products.ConvertAll(p =>
+                new OrderItem(p.ProductId, p.ProductName, p.ProductAmount, p.ProductPrice));
 
-            // Create order
             var order = new Order(
                 orderNumber,
                 invoiceAddress,
@@ -43,14 +39,12 @@ public class CreateOrderCommandHandler(
                 invoiceCreditCardNumber,
                 orderItems);
 
-            // Save order
             await orderRepository.AddAsync(order, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Order {OrderNumber} created successfully with total amount {TotalAmount:C}",
                 order.OrderNumber, order.TotalAmount);
 
-            // Create OrderDto from the created order
             var orderDto = new OrderDto
             {
                 OrderNumber = order.OrderNumber,

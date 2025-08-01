@@ -103,5 +103,4 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
         Database.SetCommandTimeout(timeout);
         Database.Migrate();
     }
-
 }

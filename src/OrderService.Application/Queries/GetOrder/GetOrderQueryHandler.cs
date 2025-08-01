@@ -31,14 +31,14 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository, ILogger<GetO
                 InvoiceCreditCardNumber = order.InvoiceCreditCardNumber.Value,
                 CreatedAt = order.CreatedAt,
                 TotalAmount = order.TotalAmount,
-                Products = order.OrderItems.Select(item => new OrderItemDto
+                Products = [.. order.OrderItems.Select(item => new OrderItemDto
                 {
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
                     ProductAmount = item.ProductAmount,
                     ProductPrice = item.ProductPrice,
                     TotalPrice = item.TotalPrice
-                }).ToList()
+                })]
             };
 
             logger.LogInformation("Order {OrderNumber} retrieved successfully", request.OrderNumber);
