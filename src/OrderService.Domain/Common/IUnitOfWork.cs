@@ -10,4 +10,5 @@ public interface IUnitOfWork : IDisposable
     public void Remove<TEntity>(TEntity entity) where TEntity : class;
     public void MarkAsChanged<TEntity>(TEntity entity) where TEntity : class;
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    public void Migrate(TimeSpan timeout);
 }

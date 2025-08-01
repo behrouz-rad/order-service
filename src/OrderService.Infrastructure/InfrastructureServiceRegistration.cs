@@ -1,0 +1,27 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using OrderService.Domain.Common;
+using OrderService.Domain.Repositories;
+using OrderService.Infrastructure.Data;
+using OrderService.Infrastructure.Repositories;
+using OrderService.Infrastructure.Services;
+
+namespace OrderService.Infrastructure;
+
+public static class InfrastructureServiceRegistration
+{
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<OrderDbContext>(options =>
+            options.UseSqlServer(
+                configuration.GetConnectionString("DefaultConnection"),
+                builder => builder.MigrationsAssembly("OrderService.Api")));
+
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<OrderDbContext>());
+        services.AddScoped<IDatabaseMigrationService, DatabaseMigrationService>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+
+        return services;
+    }
+}
