@@ -1,4 +1,6 @@
-﻿using OrderService.Api.Extensions;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using OrderService.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

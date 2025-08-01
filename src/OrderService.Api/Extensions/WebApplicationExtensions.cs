@@ -1,5 +1,6 @@
-﻿using OrderService.Application.Services;
-using OrderService.Infrastructure.Services;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using OrderService.Application.Services;
 using Serilog;
 
 namespace OrderService.Api.Extensions;

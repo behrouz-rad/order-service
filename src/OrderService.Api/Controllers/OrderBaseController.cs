@@ -1,4 +1,6 @@
-﻿using FluentResults;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace OrderService.Api.Controllers;

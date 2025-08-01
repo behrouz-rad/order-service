@@ -1,4 +1,6 @@
-﻿using FluentResults;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using FluentResults;
 using MediatR;
 using OrderService.Application.DTOs;
 

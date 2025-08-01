@@ -30,7 +30,7 @@ public class Order
             throw new ArgumentException("Order number cannot be null or empty", nameof(orderNumber));
         }
 
-        if (!orderItems.Any())
+        if (orderItems?.Any() is not true)
         {
             throw new ArgumentException("Order must contain at least one item", nameof(orderItems));
         }

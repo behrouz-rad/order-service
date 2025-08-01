@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
 using FluentResults;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using OrderService.Application.DTOs;
 using OrderService.Application.Enums;
 using OrderService.Domain.Repositories;
-using Microsoft.Extensions.Logging;
 
 namespace OrderService.Application.Queries.GetOrder;
 

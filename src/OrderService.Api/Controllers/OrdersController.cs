@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Commands.CreateOrder;
-using OrderService.Application.Queries.GetOrder;
 using OrderService.Application.DTOs;
 using OrderService.Application.Enums;
+using OrderService.Application.Queries.GetOrder;
 
 namespace OrderService.Api.Controllers;
 

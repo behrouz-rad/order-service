@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using FluentValidation;
 using MediatR;
 
 namespace OrderService.Api.Behaviors;

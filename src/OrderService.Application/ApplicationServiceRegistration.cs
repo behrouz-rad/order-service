@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
 using System.Reflection;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OrderService.Application;
 

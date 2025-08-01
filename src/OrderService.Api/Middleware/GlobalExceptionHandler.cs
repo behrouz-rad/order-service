@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
 using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace OrderService.Api.Middleware;
 

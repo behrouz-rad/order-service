@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using MediatR;
 using Microsoft.OpenApi.Models;
 using OrderService.Api.Behaviors;
 using OrderService.Api.Middleware;
