@@ -1,4 +1,6 @@
-﻿using OrderService.Domain.ValueObjects;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using OrderService.Domain.ValueObjects;
 
 namespace OrderService.Domain.Entities;
 

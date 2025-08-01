@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using Microsoft.EntityFrameworkCore;
 
 namespace OrderService.Domain.Common;
 

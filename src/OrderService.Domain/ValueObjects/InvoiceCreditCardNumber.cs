@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using System.Text.RegularExpressions;
 
 namespace OrderService.Domain.ValueObjects;
 

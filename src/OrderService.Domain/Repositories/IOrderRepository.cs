@@ -1,4 +1,6 @@
-﻿using OrderService.Domain.Entities;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using OrderService.Domain.Entities;
 
 namespace OrderService.Domain.Repositories;
 

@@ -1,4 +1,6 @@
-﻿namespace OrderService.Domain.ValueObjects;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+namespace OrderService.Domain.ValueObjects;
 
 public record OrderItem
 {

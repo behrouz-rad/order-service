@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using Microsoft.EntityFrameworkCore;
 using OrderService.Domain.Common;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;

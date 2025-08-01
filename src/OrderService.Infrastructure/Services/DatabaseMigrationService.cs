@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using Microsoft.Extensions.Logging;
 using OrderService.Domain.Common;
 using Polly;
 using static System.Console;

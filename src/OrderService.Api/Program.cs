@@ -1,3 +1,5 @@
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
