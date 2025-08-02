@@ -23,7 +23,6 @@ public class OrderItemTests
         orderItem.ProductName.Should().Be(productName);
         orderItem.ProductAmount.Should().Be(productAmount);
         orderItem.ProductPrice.Should().Be(productPrice);
-        orderItem.TotalPrice.Should().Be(2999.98m);
     }
 
     [Theory]

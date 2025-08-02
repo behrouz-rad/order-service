@@ -75,8 +75,6 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 orderItem.Property(oi => oi.ProductPrice)
                          .IsRequired()
                          .HasColumnType("decimal(18,2)");
-
-                orderItem.Ignore(oi => oi.TotalPrice);
             });
         });
     }

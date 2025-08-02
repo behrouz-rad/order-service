@@ -10,8 +10,6 @@ public record OrderItem
     public int ProductAmount { get; init; }
     public decimal ProductPrice { get; init; }
 
-    public decimal TotalPrice => ProductAmount * ProductPrice;
-
     public OrderItem(string productId, string productName, int productAmount, decimal productPrice)
     {
         if (string.IsNullOrWhiteSpace(productId))

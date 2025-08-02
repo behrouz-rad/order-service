@@ -18,5 +18,4 @@ public record OrderItemDto
     public required string ProductName { get; init; }
     public required int ProductAmount { get; init; }
     public required decimal ProductPrice { get; init; }
-    public required decimal TotalPrice { get; init; }
 }

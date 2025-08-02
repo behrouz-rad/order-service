@@ -37,8 +37,7 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository, ILogger<GetO
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
                     ProductAmount = item.ProductAmount,
-                    ProductPrice = item.ProductPrice,
-                    TotalPrice = item.TotalPrice
+                    ProductPrice = item.ProductPrice
                 })]
             };
 
