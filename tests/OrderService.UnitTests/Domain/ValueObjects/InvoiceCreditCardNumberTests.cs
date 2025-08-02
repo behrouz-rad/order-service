@@ -3,7 +3,7 @@
 using FluentAssertions;
 using OrderService.Domain.ValueObjects;
 
-namespace OrderService.Tests.Domain.ValueObjects;
+namespace OrderService.UnitTests.Domain.ValueObjects;
 public class InvoiceCreditCardNumberTests
 {
     [Theory]

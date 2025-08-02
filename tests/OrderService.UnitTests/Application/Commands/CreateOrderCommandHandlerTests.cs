@@ -11,7 +11,7 @@ using OrderService.Application.Services;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
 
-namespace OrderService.Tests.Application.Commands;
+namespace OrderService.UnitTests.Application.Commands;
 public class CreateOrderCommandHandlerTests
 {
     private readonly Mock<IOrderRepository> _mockOrderRepository;

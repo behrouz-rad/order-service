@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Services;
 
-namespace OrderService.Tests.Integration;
+namespace OrderService.IntegrationTests;
 public class OrderWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -27,4 +28,3 @@ public class OrderWebApplicationFactory : WebApplicationFactory<Program>
         });
     }
 }
-

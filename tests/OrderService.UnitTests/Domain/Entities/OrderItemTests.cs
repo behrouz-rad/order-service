@@ -3,7 +3,7 @@
 using FluentAssertions;
 using OrderService.Domain.ValueObjects;
 
-namespace OrderService.Tests.Domain.Entities;
+namespace OrderService.UnitTests.Domain.Entities;
 public class OrderItemTests
 {
     [Fact]

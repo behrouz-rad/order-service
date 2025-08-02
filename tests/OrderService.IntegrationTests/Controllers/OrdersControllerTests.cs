@@ -4,8 +4,9 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using OrderService.Application.DTOs;
+using OrderService.IntegrationTests;
 
-namespace OrderService.Tests.Integration.Controllers;
+namespace OrderService.IntegrationTests.Controllers;
 public class OrdersControllerTests(OrderWebApplicationFactory factory) : IClassFixture<OrderWebApplicationFactory>
 {
     private readonly HttpClient _client = factory.CreateClient();

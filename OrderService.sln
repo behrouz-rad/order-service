@@ -23,7 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{1591E2
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Tests", "tests\OrderService.Tests\OrderService.Tests.csproj", "{D576E968-9D14-4B3C-B208-62542BCD4AB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.UnitTests", "tests\OrderService.UnitTests\OrderService.UnitTests.csproj", "{D576E968-9D14-4B3C-B208-62542BCD4AB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.IntegrationTests", "tests\OrderService.IntegrationTests\OrderService.IntegrationTests.csproj", "{FCFCD16B-2F81-42CD-AD64-90B70F0009F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{D576E968-9D14-4B3C-B208-62542BCD4AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D576E968-9D14-4B3C-B208-62542BCD4AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D576E968-9D14-4B3C-B208-62542BCD4AB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCFCD16B-2F81-42CD-AD64-90B70F0009F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCFCD16B-2F81-42CD-AD64-90B70F0009F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCFCD16B-2F81-42CD-AD64-90B70F0009F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCFCD16B-2F81-42CD-AD64-90B70F0009F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{5DDE9438-4997-4157-AFA5-2311FF8E65D6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{9B5B1C07-6EA7-4180-A2EE-CF862ECC6CC0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D576E968-9D14-4B3C-B208-62542BCD4AB3} = {59F6F1C5-9FB6-4B13-B675-451E15402BB3}
+		{FCFCD16B-2F81-42CD-AD64-90B70F0009F6} = {59F6F1C5-9FB6-4B13-B675-451E15402BB3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {13231DAB-4DF8-41F8-B324-E8D5ACF31EF5}

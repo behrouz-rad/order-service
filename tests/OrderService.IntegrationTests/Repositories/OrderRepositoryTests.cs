@@ -7,11 +7,11 @@ using OrderService.Domain.ValueObjects;
 using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Repositories;
 
-namespace OrderService.Tests.Integration.Repositories;
+namespace OrderService.IntegrationTests.Repositories;
 
 public class OrderRepositoryTests : IDisposable
 {
-    private OrderDbContext _context;
+    private readonly OrderDbContext _context;
     private readonly OrderRepository _repository;
 
     public OrderRepositoryTests()

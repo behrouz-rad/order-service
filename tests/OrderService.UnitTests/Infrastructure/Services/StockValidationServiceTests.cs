@@ -3,7 +3,7 @@
 using FluentAssertions;
 using OrderService.Infrastructure.Services;
 
-namespace OrderService.Tests.Infrastructure.Services;
+namespace OrderService.UnitTests.Infrastructure.Services;
 
 public class StockValidationServiceTests
 {

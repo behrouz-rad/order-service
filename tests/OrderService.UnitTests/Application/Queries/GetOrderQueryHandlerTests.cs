@@ -9,7 +9,7 @@ using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
 using OrderService.Domain.ValueObjects;
 
-namespace OrderService.Tests.Application.Queries;
+namespace OrderService.UnitTests.Application.Queries;
 public class GetOrderQueryHandlerTests
 {
     private readonly Mock<IOrderRepository> _mockOrderRepository;

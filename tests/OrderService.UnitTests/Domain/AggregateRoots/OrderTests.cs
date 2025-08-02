@@ -4,7 +4,7 @@ using FluentAssertions;
 using OrderService.Domain.Entities;
 using OrderService.Domain.ValueObjects;
 
-namespace OrderService.Tests.Domain.AggregateRoots;
+namespace OrderService.UnitTests.Domain.AggregateRoots;
 
 public record ValidOrderTestCase(
     string TestName,
