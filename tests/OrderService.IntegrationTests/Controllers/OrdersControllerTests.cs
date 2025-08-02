@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using OrderService.Application.DTOs;
-using OrderService.IntegrationTests;
 
 namespace OrderService.IntegrationTests.Controllers;
 

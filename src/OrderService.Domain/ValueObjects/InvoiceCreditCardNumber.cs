@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace OrderService.Domain.ValueObjects;
 
-public record InvoiceCreditCardNumber
+public partial record InvoiceCreditCardNumber
 {
     public string Value { get; init; }
 
@@ -27,7 +27,7 @@ public record InvoiceCreditCardNumber
 
     private static bool IsValidCreditCardNumber(string creditCardNumber)
     {
-        var creditCardRegex = new Regex(@"^\d{13,19}$");
+        var creditCardRegex = CreditCardRegex();
 
         return creditCardRegex.IsMatch(creditCardNumber);
     }
@@ -36,4 +36,7 @@ public record InvoiceCreditCardNumber
     public static implicit operator InvoiceCreditCardNumber(string creditCard) => new(creditCard);
 
     public override string ToString() => Value;
+
+    [GeneratedRegex(@"^\d{13,19}$", RegexOptions.Compiled, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex CreditCardRegex();
 }

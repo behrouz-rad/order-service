@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace OrderService.Domain.ValueObjects;
 
-public record InvoiceEmailAddress
+public partial record InvoiceEmailAddress
 {
     public string Value { get; init; }
 
@@ -25,7 +25,7 @@ public record InvoiceEmailAddress
 
     private static bool IsValidEmail(string email)
     {
-        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase);
+        var emailRegex = EmailRegex();
         return emailRegex.IsMatch(email);
     }
 
@@ -33,4 +33,6 @@ public record InvoiceEmailAddress
     public static implicit operator InvoiceEmailAddress(string email) => new(email);
 
     public override string ToString() => Value;
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex EmailRegex();
 }

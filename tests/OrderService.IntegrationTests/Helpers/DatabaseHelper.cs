@@ -8,7 +8,6 @@ namespace OrderService.IntegrationTests.Helpers;
 
 public static class DatabaseHelper
 {
-
     private static string GetTestConnectionString()
     {
         var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Test";
