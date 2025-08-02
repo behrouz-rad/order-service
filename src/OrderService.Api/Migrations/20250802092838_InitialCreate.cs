@@ -1,5 +1,4 @@
-﻿// © 2025 Behrouz Rad. All rights reserved.
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable

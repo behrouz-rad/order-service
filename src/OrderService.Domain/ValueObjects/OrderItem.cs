@@ -4,6 +4,7 @@ namespace OrderService.Domain.ValueObjects;
 
 public record OrderItem
 {
+    public int Id { get; init; }
     public string ProductId { get; init; }
     public string ProductName { get; init; }
     public int ProductAmount { get; init; }

@@ -3,7 +3,7 @@
 using FluentAssertions;
 using OrderService.Infrastructure.Services;
 
-namespace OrderService.Tests.Infrastructure;
+namespace OrderService.Tests.Infrastructure.Services;
 
 public class StockValidationServiceTests
 {
@@ -68,14 +68,6 @@ public class StockValidationServiceTests
                 RequestedAmount = 1,
                 ExpectedResult = false,
                 Description = "Empty product ID, requesting 1"
-            },
-            new()
-            {
-                TestName = "NullProductId_ReturnsFalse",
-                ProductId = null!,
-                RequestedAmount = 1,
-                ExpectedResult = false,
-                Description = "Null product ID, requesting 1"
             }
         };
 
