@@ -1,4 +1,5 @@
-﻿using System;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable

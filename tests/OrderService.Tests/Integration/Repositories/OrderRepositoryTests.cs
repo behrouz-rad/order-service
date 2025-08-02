@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿// © 2025 Behrouz Rad. All rights reserved.
+
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Domain.Entities;
 using OrderService.Domain.ValueObjects;
