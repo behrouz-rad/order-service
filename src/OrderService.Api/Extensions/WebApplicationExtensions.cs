@@ -27,12 +27,6 @@ public static class WebApplicationExtensions
 
     public static async Task<WebApplication> MigrateDatabaseAsync(this WebApplication app)
     {
-        if (app.Environment.EnvironmentName == "Testing")
-        {
-            // Skip migrations in testing environment
-            return app;
-        }
-
         using var scope = app.Services.CreateScope();
         var migrationService = scope.ServiceProvider.GetRequiredService<IDatabaseMigrationService>();
 

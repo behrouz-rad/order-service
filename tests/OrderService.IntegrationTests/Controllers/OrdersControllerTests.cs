@@ -7,6 +7,7 @@ using OrderService.Application.DTOs;
 using OrderService.IntegrationTests;
 
 namespace OrderService.IntegrationTests.Controllers;
+
 public class OrdersControllerTests(OrderWebApplicationFactory factory) : IClassFixture<OrderWebApplicationFactory>
 {
     private readonly HttpClient _client = factory.CreateClient();
