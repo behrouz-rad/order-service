@@ -1,8 +1,10 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
+using System.Text.Json;
 using MediatR;
 using Microsoft.OpenApi.Models;
 using OrderService.Api.Behaviors;
+using OrderService.Api.Converters;
 using OrderService.Api.Middleware;
 using OrderService.Application;
 using OrderService.Infrastructure;
@@ -14,7 +16,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        });
         services.AddProblemDetails();
         services.AddHealthChecks();
 
