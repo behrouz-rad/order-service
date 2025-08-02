@@ -1,20 +1,29 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using OrderService.Infrastructure.Data;
 
 namespace OrderService.IntegrationTests.Helpers;
 
 public static class DatabaseHelper
 {
-    private const string TestConnectionString = "Server=SNNBW-B84CYD3\\SQLEXPRESS;Database=Order_Test;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true;Encrypt=false";
+
+    private static string GetTestConnectionString()
+    {
+        var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Test";
+        return new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: false)
+            .Build()
+            .GetConnectionString("TestConnection")!;
+    }
 
     public static OrderDbContext CreateTestContext()
     {
         var options = new DbContextOptionsBuilder<OrderDbContext>()
-            .UseSqlServer(TestConnectionString)
+            .UseSqlServer(TestDatabaseConnectionString)
             .Options;
-
         return new OrderDbContext(options);
     }
 
@@ -25,5 +34,5 @@ public static class DatabaseHelper
         await context.Database.EnsureCreatedAsync();
     }
 
-    public static string TestDatabaseConnectionString => TestConnectionString;
+    public static string TestDatabaseConnectionString => GetTestConnectionString();
 }
