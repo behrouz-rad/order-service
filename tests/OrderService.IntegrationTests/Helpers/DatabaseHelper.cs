@@ -10,6 +10,13 @@ public static class DatabaseHelper
 {
     private static string GetTestConnectionString()
     {
+        // Prefer environment variable for CI, fallback to config file
+        var envConn = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+        if (!string.IsNullOrEmpty(envConn))
+        {
+            return envConn;
+        }
+
         var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Test";
         return new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)

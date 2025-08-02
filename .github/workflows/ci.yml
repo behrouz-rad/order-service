@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          SA_PASSWORD: "Your_password123"
+          ACCEPT_EULA: "Y"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "exit 0" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Restore dependencies
+        run: dotnet restore OrderService.sln
+      - name: Build
+        run: dotnet build OrderService.sln --no-restore --configuration Release
+      - name: Run Unit Tests
+        run: dotnet test tests/OrderService.UnitTests/OrderService.UnitTests.csproj --no-build --configuration Release --logger trx
+      - name: Run Integration Tests
+        env:
+          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=Order_Test;User Id=sa;Password=Your_password123;TrustServerCertificate=True;"
+        run: dotnet test tests/OrderService.IntegrationTests/OrderService.IntegrationTests.csproj --no-build --configuration Release --logger trx
