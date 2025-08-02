@@ -1,5 +1,6 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
+using System.Globalization;
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -98,6 +99,6 @@ public class CreateOrderCommandHandler(
 
     private static string GenerateOrderNumber()
     {
-        return DateTime.UtcNow.ToString("yyyyMMdd") + "-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
+        return DateTime.UtcNow.ToString("yyyyMMdd", CultureInfo.InvariantCulture) + "-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
     }
 }
