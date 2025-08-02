@@ -2,6 +2,7 @@
 
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using OrderService.Domain.Entities;
 using OrderService.Domain.ValueObjects;
 using OrderService.Infrastructure.Data;
@@ -9,48 +10,46 @@ using OrderService.Infrastructure.Repositories;
 
 namespace OrderService.IntegrationTests.Repositories;
 
-public class OrderRepositoryTests : IDisposable
+public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFixture<OrderWebApplicationFactory>
 {
-    private readonly OrderDbContext _context;
-    private readonly OrderRepository _repository;
-
-    public OrderRepositoryTests()
-    {
-        var options = new DbContextOptionsBuilder<OrderDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        _context = new OrderDbContext(options);
-        _repository = new OrderRepository(_context);
-    }
-
     [Fact]
     public async Task GetByIdAsync_WithExistingId_ShouldReturnOrder()
     {
         // Arrange
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
         var order = CreateSampleOrder();
-        await _context.Orders.AddAsync(order);
-        await _context.SaveChangesAsync();
+        await context.Orders.AddAsync(order);
+        await context.SaveChangesAsync();
 
         var orderId = order.Id;
 
         // Act
-        var result = await _repository.GetByIdAsync(orderId);
+        var result = await repository.GetByIdAsync(orderId);
 
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(orderId);
         result.OrderNumber.Should().Be(order.OrderNumber);
+
+        // Cleanup
+        await context.Orders.Where(o => o.Id == orderId).ExecuteDeleteAsync();
     }
 
     [Fact]
     public async Task GetByIdAsync_WithNonExistingId_ShouldReturnNull()
     {
         // Arrange
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
         var orderId = Guid.NewGuid();
 
         // Act
-        var result = await _repository.GetByIdAsync(orderId);
+        var result = await repository.GetByIdAsync(orderId);
 
         // Assert
         result.Should().BeNull();
@@ -60,27 +59,38 @@ public class OrderRepositoryTests : IDisposable
     public async Task GetByOrderNumberAsync_WithExistingOrderNumber_ShouldReturnOrder()
     {
         // Arrange
-        const string orderNumber = "ORD-001";
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
+        var orderNumber = $"ORD-{Guid.NewGuid():N}";
         var order = CreateSampleOrder(orderNumber);
-        await _context.Orders.AddAsync(order);
-        await _context.SaveChangesAsync();
+        await context.Orders.AddAsync(order);
+        await context.SaveChangesAsync();
 
         // Act
-        var result = await _repository.GetByOrderNumberAsync(orderNumber);
+        var result = await repository.GetByOrderNumberAsync(orderNumber);
 
         // Assert
         result.Should().NotBeNull();
         result!.OrderNumber.Should().Be(orderNumber);
+
+        // Cleanup
+        await context.Orders.Where(o => o.Id == order.Id).ExecuteDeleteAsync();
     }
 
     [Fact]
     public async Task GetByOrderNumberAsync_WithNonExistingOrderNumber_ShouldReturnNull()
     {
         // Arrange
-        const string orderNumber = "NON-EXISTING";
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
+        var orderNumber = $"NON-EXISTING-{Guid.NewGuid():N}";
 
         // Act
-        var result = await _repository.GetByOrderNumberAsync(orderNumber);
+        var result = await repository.GetByOrderNumberAsync(orderNumber);
 
         // Assert
         result.Should().BeNull();
@@ -90,94 +100,114 @@ public class OrderRepositoryTests : IDisposable
     public async Task GetAllAsync_WithOrdersInDatabase_ShouldReturnAllOrders()
     {
         // Arrange
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
+        var testId = Guid.NewGuid().ToString("N")[..8];
         var orders = new List<Order>
         {
-            CreateSampleOrder("ORD-001"),
-            CreateSampleOrder("ORD-002"),
-            CreateSampleOrder("ORD-003")
+            CreateSampleOrder($"ORD-{testId}-001"),
+            CreateSampleOrder($"ORD-{testId}-002"),
+            CreateSampleOrder($"ORD-{testId}-003")
         };
 
         foreach (var order in orders)
         {
-            await _context.Orders.AddAsync(order);
+            await context.Orders.AddAsync(order);
         }
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         // Act
-        var result = await _repository.GetAllAsync();
+        var result = await repository.GetAllAsync();
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(3);
-    }
+        var testOrders = result.Where(o => o.OrderNumber.Contains(testId)).ToList();
+        testOrders.Should().HaveCount(3);
 
-    [Fact]
-    public async Task GetAllAsync_WithEmptyDatabase_ShouldReturnEmptyCollection()
-    {
-        // Act
-        var result = await _repository.GetAllAsync();
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeEmpty();
+        // Cleanup
+        var orderIds = orders.Select(o => o.Id).ToList();
+        await context.Orders.Where(o => orderIds.Contains(o.Id)).ExecuteDeleteAsync();
     }
 
     [Fact]
     public async Task AddAsync_WithValidOrder_ShouldAddOrderToDatabase()
     {
         // Arrange
-        var order = CreateSampleOrder("ORD-ADD-001");
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
+        var orderNumber = $"ORD-ADD-{Guid.NewGuid():N}";
+        var order = CreateSampleOrder(orderNumber);
 
         // Act
-        var result = await _repository.AddAsync(order);
-        await _context.SaveChangesAsync();
+        var result = await repository.AddAsync(order);
+        await context.SaveChangesAsync();
 
         // Assert
         result.Should().Be(order);
 
-        var savedOrder = await _context.Orders.FindAsync(order.Id);
+        var savedOrder = await context.Orders.FindAsync(order.Id);
         savedOrder.Should().NotBeNull();
-        savedOrder!.OrderNumber.Should().Be("ORD-ADD-001");
+        savedOrder!.OrderNumber.Should().Be(orderNumber);
+
+        // Cleanup
+        await context.Orders.Where(o => o.Id == order.Id).ExecuteDeleteAsync();
     }
 
     [Fact]
     public async Task UpdateAsync_WithValidOrder_ShouldUpdateOrderInDatabase()
     {
         // Arrange
-        var order = CreateSampleOrder("ORD-UPDATE-001");
-        await _context.Orders.AddAsync(order);
-        await _context.SaveChangesAsync();
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
 
-        _context.Entry(order).State = EntityState.Detached;
+        var orderNumber = $"ORD-UPDATE-{Guid.NewGuid():N}";
+        var order = CreateSampleOrder(orderNumber);
+        await context.Orders.AddAsync(order);
+        await context.SaveChangesAsync();
+
+        context.Entry(order).State = EntityState.Detached;
 
         // Act
-        var updatedOrder = CreateSampleOrderWithAddress("9 Street, Karlsruhe", "ORD-UPDATE-001");
+        var updatedOrder = CreateSampleOrderWithAddress("9 Street, Karlsruhe", orderNumber);
         typeof(Order).GetProperty("Id")!.SetValue(updatedOrder, order.Id);
 
-        await _repository.UpdateAsync(updatedOrder);
-        await _context.SaveChangesAsync();
+        await repository.UpdateAsync(updatedOrder);
+        await context.SaveChangesAsync();
 
         // Assert
-        var loadedOrder = await _context.Orders.FindAsync(order.Id);
+        var loadedOrder = await context.Orders.FindAsync(order.Id);
         loadedOrder.Should().NotBeNull();
-        loadedOrder!.OrderNumber.Should().Be("ORD-UPDATE-001");
+        loadedOrder!.OrderNumber.Should().Be(orderNumber);
         loadedOrder!.InvoiceAddress.Should().BeEquivalentTo(new InvoiceAddress("9 Street, Karlsruhe"));
+
+        // Cleanup
+        await context.Orders.Where(o => o.Id == order.Id).ExecuteDeleteAsync();
     }
 
     [Fact]
     public async Task DeleteAsync_WithValidOrder_ShouldRemoveOrderFromDatabase()
     {
         // Arrange
-        var order = CreateSampleOrder("ORD-DELETE-001");
-        await _context.Orders.AddAsync(order);
-        await _context.SaveChangesAsync();
+        await using var scope = factory.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        var repository = new OrderRepository(context);
+
+        var orderNumber = $"ORD-DELETE-{Guid.NewGuid():N}";
+        var order = CreateSampleOrder(orderNumber);
+        await context.Orders.AddAsync(order);
+        await context.SaveChangesAsync();
 
         // Act
-        await _repository.DeleteAsync(order);
-        await _context.SaveChangesAsync();
+        await repository.DeleteAsync(order);
+        await context.SaveChangesAsync();
 
         // Assert
-        var deletedOrder = await _context.Orders.FindAsync(order.Id);
+        var deletedOrder = await context.Orders.FindAsync(order.Id);
         deletedOrder.Should().BeNull();
     }
 
@@ -211,19 +241,5 @@ public class OrderRepositoryTests : IDisposable
             new InvoiceCreditCardNumber("1234-5678-9101-1121"),
             orderItems
         );
-    }
-
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _context?.Dispose();
-        }
     }
 }
