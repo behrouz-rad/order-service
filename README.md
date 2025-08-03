@@ -58,7 +58,7 @@ The project follows a **Domain-Driven Design (DDD)** and **Clean Architecture** 
 1. **Requirements:** .NET 9 SDK, SQL Server instance.
 2. **Setup:**
    - Clone the repository.
-   - Configure the connection string in `appsettings.json` or via environment variables.
+   - Configure the connection string in `appsettings.json` or via environment variable (`ConnectionStrings__DefaultConnection`).
 3. **Run the Service:**
    ```sh
    dotnet run --project src/OrderService.Api
@@ -66,6 +66,7 @@ The project follows a **Domain-Driven Design (DDD)** and **Clean Architecture** 
    The service will apply any pending database migrations automatically.
 4. **API Documentation:** Access Swagger UI at `/swagger` after starting the service.
 5. **Testing:**
+   - Configure the connection string in `appsettings.Test.json`.
    ```sh
    dotnet test
    ```
@@ -75,4 +76,5 @@ The project follows a **Domain-Driven Design (DDD)** and **Clean Architecture** 
 **Assumptions:**  
 - The service is intended to run as part of a larger microservices ecosystem.
 - SQL Server is available and accessible for EF Core migrations.
+- An empty database with the name specified in the connection string already exists in SQL Server.
 - The reader is familiar with .NET development practices.
