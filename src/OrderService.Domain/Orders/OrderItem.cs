@@ -1,8 +1,8 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
-namespace OrderService.Domain.ValueObjects;
+namespace OrderService.Domain.Orders;
 
-public record OrderItem
+public class OrderItem
 {
     public int Id { get; init; }
     public string ProductId { get; init; }

@@ -2,7 +2,7 @@
 
 using OrderService.Domain.ValueObjects;
 
-namespace OrderService.Domain.Entities;
+namespace OrderService.Domain.Orders;
 
 public class Order
 {

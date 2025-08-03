@@ -1,7 +1,7 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using FluentAssertions;
-using OrderService.Domain.ValueObjects;
+using OrderService.Domain.Orders;
 
 namespace OrderService.UnitTests.Domain.Entities;
 public class OrderItemTests

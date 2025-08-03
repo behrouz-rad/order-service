@@ -8,7 +8,7 @@ using OrderService.Application.DTOs;
 using OrderService.Application.Enums;
 using OrderService.Application.Persistence;
 using OrderService.Application.Services;
-using OrderService.Domain.Entities;
+using OrderService.Domain.Orders;
 using OrderService.Domain.Repositories;
 
 namespace OrderService.UnitTests.Application.Commands;

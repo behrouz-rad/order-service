@@ -1,6 +1,6 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
-namespace OrderService.Domain.ValueObjects;
+namespace OrderService.Domain.Orders;
 
 public record InvoiceAddress
 {

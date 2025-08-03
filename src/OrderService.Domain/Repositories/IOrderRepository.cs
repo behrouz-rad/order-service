@@ -1,6 +1,6 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
-using OrderService.Domain.Entities;
+using OrderService.Domain.Orders;
 
 namespace OrderService.Domain.Repositories;
 

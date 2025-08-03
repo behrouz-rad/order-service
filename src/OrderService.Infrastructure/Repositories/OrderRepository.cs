@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using OrderService.Application.Persistence;
-using OrderService.Domain.Entities;
+using OrderService.Domain.Orders;
 using OrderService.Domain.Repositories;
 
 namespace OrderService.Infrastructure.Repositories;

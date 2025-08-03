@@ -3,7 +3,7 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using OrderService.Domain.Entities;
+using OrderService.Domain.Orders;
 using OrderService.Domain.ValueObjects;
 using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Repositories;

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using OrderService.Application.Enums;
 using OrderService.Application.Queries.GetOrder;
-using OrderService.Domain.Entities;
+using OrderService.Domain.Orders;
 using OrderService.Domain.Repositories;
 using OrderService.Domain.ValueObjects;
 

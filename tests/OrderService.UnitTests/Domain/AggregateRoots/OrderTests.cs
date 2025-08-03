@@ -1,7 +1,7 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using FluentAssertions;
-using OrderService.Domain.Entities;
+using OrderService.Domain.Orders;
 using OrderService.Domain.ValueObjects;
 
 namespace OrderService.UnitTests.Domain.AggregateRoots;
