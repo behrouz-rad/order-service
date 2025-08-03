@@ -1,3 +1,5 @@
+
+[![CI](https://github.com/behrouz-rad/order-service/actions/workflows/ci.yml/badge.svg)](https://github.com/behrouz-rad/order-service/actions/workflows/ci.yml)
 # Order Service
 
 ## Project Overview
