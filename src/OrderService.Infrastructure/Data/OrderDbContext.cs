@@ -85,13 +85,13 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
         => Set<TEntity>().AsNoTracking();
 
     public new void Add<TEntity>(TEntity entity) where TEntity : class
-        => Entry(entity).State = EntityState.Added;
+        => Set<TEntity>().Add(entity);
 
     public new void Remove<TEntity>(TEntity entity) where TEntity : class
-        => Entry(entity).State = EntityState.Deleted;
+        => Set<TEntity>().Remove(entity);
 
     public void MarkAsChanged<TEntity>(TEntity entity) where TEntity : class
-        => Entry(entity).State = EntityState.Modified;
+        => Update(entity);
 
     public new async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await base.SaveChangesAsync(cancellationToken);

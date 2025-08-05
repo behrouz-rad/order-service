@@ -84,7 +84,7 @@ public class CreateOrderCommandHandler(
         }
         catch (ArgumentException ex)
         {
-            logger.LogWarning("Invalid order data: {Message}", ex.Message);
+            logger.LogError(ex, "Invalid order data");
             return Result.Fail(new Error($"Invalid order data: {ex.Message}")
                          .WithMetadata("ErrorType", ErrorType.ValidationError));
         }
