@@ -46,7 +46,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var orderId = Guid.NewGuid();
+        var orderId = Guid.CreateVersion7();
 
         // Act
         var result = await repository.GetByIdAsync(orderId);
@@ -63,7 +63,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var orderNumber = $"ORD-{Guid.NewGuid():N}";
+        var orderNumber = $"ORD-{Guid.CreateVersion7():N}";
         var order = CreateSampleOrder(orderNumber);
         await context.Orders.AddAsync(order);
         await context.SaveChangesAsync();
@@ -87,7 +87,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var orderNumber = $"NON-EXISTING-{Guid.NewGuid():N}";
+        var orderNumber = $"NON-EXISTING-{Guid.CreateVersion7():N}";
 
         // Act
         var result = await repository.GetByOrderNumberAsync(orderNumber);
@@ -104,7 +104,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var testId = Guid.NewGuid().ToString("N")[..8];
+        var testId = Guid.CreateVersion7().ToString("N")[..8];
         var orders = new List<Order>
         {
             CreateSampleOrder($"ORD-{testId}-001"),
@@ -139,7 +139,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var orderNumber = $"ORD-ADD-{Guid.NewGuid():N}";
+        var orderNumber = $"ORD-ADD-{Guid.CreateVersion7():N}";
         var order = CreateSampleOrder(orderNumber);
 
         // Act
@@ -165,7 +165,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var orderNumber = $"ORD-UPDATE-{Guid.NewGuid():N}";
+        var orderNumber = $"ORD-UPDATE-{Guid.CreateVersion7():N}";
         var order = CreateSampleOrder(orderNumber);
         await context.Orders.AddAsync(order);
         await context.SaveChangesAsync();
@@ -197,7 +197,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
         var repository = new OrderRepository(context);
 
-        var orderNumber = $"ORD-DELETE-{Guid.NewGuid():N}";
+        var orderNumber = $"ORD-DELETE-{Guid.CreateVersion7():N}";
         var order = CreateSampleOrder(orderNumber);
         await context.Orders.AddAsync(order);
         await context.SaveChangesAsync();

@@ -4,10 +4,11 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using OrderService.Application.DTOs;
+using Xunit.Abstractions;
 
 namespace OrderService.IntegrationTests.Controllers;
 
-public class OrdersControllerTests(OrderWebApplicationFactory factory) : IClassFixture<OrderWebApplicationFactory>
+public class OrdersControllerTests(OrderWebApplicationFactory factory,ITestOutputHelper output) : IClassFixture<OrderWebApplicationFactory>
 {
     private readonly HttpClient _client = factory.CreateClient();
 
@@ -75,6 +76,7 @@ public class OrdersControllerTests(OrderWebApplicationFactory factory) : IClassF
 
         var createResponse = await _client.PostAsJsonAsync("/api/orders", createOrderDto);
         var createResult = await createResponse.Content.ReadFromJsonAsync<dynamic>();
+        output.WriteLine(createResponse.StatusCode.ToString());
         var orderNumber = createResult?.GetProperty("orderNumber").GetString();
 
         // Act

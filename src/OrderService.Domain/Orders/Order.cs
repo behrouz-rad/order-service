@@ -35,7 +35,7 @@ public class Order
             throw new ArgumentException("Order must contain at least one item", nameof(orderItems));
         }
 
-        Id = Guid.NewGuid();
+        Id = Guid.CreateVersion7();
         OrderNumber = orderNumber;
         CreatedAt = DateTime.UtcNow;
         InvoiceAddress = invoiceAddress ?? throw new ArgumentNullException(nameof(invoiceAddress));

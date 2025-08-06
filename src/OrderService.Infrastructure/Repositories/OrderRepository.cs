@@ -11,10 +11,9 @@ public class OrderRepository(IUnitOfWork unitOfWork) : IOrderRepository
 {
     private readonly DbSet<Order> _orders = unitOfWork.DbSet<Order>();
 
-    public async Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public ValueTask<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _orders.AsNoTracking()
-            .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+        return _orders.FindAsync(id, cancellationToken);
     }
 
     public async Task<Order?> GetByOrderNumberAsync(string orderNumber, CancellationToken cancellationToken = default)
@@ -23,7 +22,7 @@ public class OrderRepository(IUnitOfWork unitOfWork) : IOrderRepository
             .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber, cancellationToken);
     }
 
-    public async Task<IEnumerable<Order>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Order>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _orders.AsNoTracking()
             .ToListAsync(cancellationToken);

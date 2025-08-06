@@ -98,6 +98,6 @@ public class CreateOrderCommandHandler(
 
     private static string GenerateOrderNumber()
     {
-        return DateTime.UtcNow.ToString("yyyyMMdd", CultureInfo.InvariantCulture) + "-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
+        return DateTime.UtcNow.ToString("yyyyMMdd", CultureInfo.InvariantCulture) + "-" + Guid.CreateVersion7().ToString("N").ToUpperInvariant();
     }
 }
