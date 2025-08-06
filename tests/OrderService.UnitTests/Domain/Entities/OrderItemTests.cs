@@ -16,58 +16,88 @@ public class OrderItemTests
         const decimal productPrice = 1499.99m;
 
         // Act
-        var orderItem = new OrderItem(productId, productName, productAmount, productPrice);
+        var result = OrderItem.Create(productId, productName, productAmount, productPrice);
 
         // Assert
+        result.IsSuccess.Should().BeTrue();
+        var orderItem = result.Value;
         orderItem.ProductId.Should().Be(productId);
         orderItem.ProductName.Should().Be(productName);
         orderItem.ProductAmount.Should().Be(productAmount);
         orderItem.ProductPrice.Should().Be(productPrice);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData(null)]
-    public void OrderItem_ShouldThrowArgumentException_WhenProductIdIsNullOrEmpty(string productId)
+    [Fact]
+    public void OrderItem_ShouldReturnFailure_WhenProductIdIsNull()
     {
-        // Act & Assert
-        Func<OrderItem> act = () => new OrderItem(productId, "Product", 1, 10.0m);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Product ID cannot be null or empty*");
+        // Act
+        var result = OrderItem.Create(null!, "Product", 1, 10.0m);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Product ID cannot be null or empty");
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData(null)]
-    public void OrderItem_ShouldThrowArgumentException_WhenProductNameIsNullOrEmpty(string productName)
+    public void OrderItem_ShouldReturnFailure_WhenProductIdIsNullOrEmpty(string? productId)
     {
-        // Act & Assert
-        Func<OrderItem> act = () => new OrderItem("123", productName, 1, 10.0m);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Product name cannot be null or empty*");
+        // Act
+        var result = OrderItem.Create(productId!, "Product", 1, 10.0m);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Product ID cannot be null or empty");
+    }
+
+    [Fact]
+    public void OrderItem_ShouldReturnFailure_WhenProductNameIsNull()
+    {
+        // Act
+        var result = OrderItem.Create("123", null!, 1, 10.0m);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Product name cannot be null or empty");
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void OrderItem_ShouldReturnFailure_WhenProductNameIsNullOrEmpty(string? productName)
+    {
+        // Act
+        var result = OrderItem.Create("123", productName!, 1, 10.0m);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Product name cannot be null or empty");
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void OrderItem_ShouldThrowArgumentException_WhenProductAmountIsZeroOrNegative(int productAmount)
+    public void OrderItem_ShouldReturnFailure_WhenProductAmountIsZeroOrNegative(int productAmount)
     {
-        // Act & Assert
-        Func<OrderItem> act = () => new OrderItem("123", "Product", productAmount, 10.0m);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Product amount must be greater than zero*");
+        // Act
+        var result = OrderItem.Create("123", "Product", productAmount, 10.0m);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Product amount must be greater than zero");
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void OrderItem_ShouldThrowArgumentException_WhenProductPriceIsZeroOrNegative(decimal productPrice)
+    public void OrderItem_ShouldReturnFailure_WhenProductPriceIsZeroOrNegative(decimal productPrice)
     {
-        // Act & Assert
-        Func<OrderItem> act = () => new OrderItem("123", "Product", 1, productPrice);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Product price must be greater than zero*");
+        // Act
+        var result = OrderItem.Create("123", "Product", 1, productPrice);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Product price must be greater than zero");
     }
 }

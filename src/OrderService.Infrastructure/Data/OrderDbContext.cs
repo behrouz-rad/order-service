@@ -37,21 +37,21 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
             entity.Property(o => o.InvoiceAddress)
                 .HasConversion(
                     v => v.Value,
-                    v => new InvoiceAddress(v))
+                    v => InvoiceAddress.Create(v).Value)
                 .IsRequired()
                 .HasMaxLength(500);
 
             entity.Property(o => o.InvoiceEmailAddress)
                 .HasConversion(
                     v => v.Value,
-                    v => new InvoiceEmailAddress(v))
+                    v => InvoiceEmailAddress.Create(v).Value)
                 .IsRequired()
                 .HasMaxLength(256);
 
             entity.Property(o => o.InvoiceCreditCardNumber)
                 .HasConversion(
                     v => v.Value,
-                    v => new InvoiceCreditCardNumber(v))
+                    v => InvoiceCreditCardNumber.Create(v).Value)
                 .IsRequired()
                 .HasMaxLength(50);
 

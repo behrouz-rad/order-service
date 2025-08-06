@@ -13,33 +13,48 @@ public class InvoiceCreditCardNumberTests
     public void InvoiceCreditCardNumber_ShouldCreateValidCreditCard_WhenValidNumberProvided(string creditCardNumber)
     {
         // Act
-        var invoiceCreditCard = new InvoiceCreditCardNumber(creditCardNumber);
+        var result = InvoiceCreditCardNumber.Create(creditCardNumber);
 
         // Assert
-        invoiceCreditCard.Value.Should().Be(creditCardNumber);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Value.Should().Be(creditCardNumber);
+    }
+
+    [Fact]
+    public void InvoiceCreditCardNumber_ShouldReturnFailure_WhenNumberIsNull()
+    {
+        // Act
+        var result = InvoiceCreditCardNumber.Create(null!);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Credit card number cannot be null or empty");
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData(null)]
-    public void InvoiceCreditCardNumber_ShouldThrowArgumentException_WhenNumberIsNullOrEmpty(string creditCardNumber)
+    public void InvoiceCreditCardNumber_ShouldReturnFailure_WhenNumberIsNullOrEmpty(string? creditCardNumber)
     {
-        // Act & Assert
-        var act = () => new InvoiceCreditCardNumber(creditCardNumber);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Credit card number cannot be null or empty*");
+        // Act
+        var result = InvoiceCreditCardNumber.Create(creditCardNumber!);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Credit card number cannot be null or empty");
     }
 
     [Theory]
     [InlineData("123")]
     [InlineData("abcd-efgh-ijkl-mnop")]
     [InlineData("12345")]
-    public void InvoiceCreditCardNumber_ShouldThrowArgumentException_WhenNumberFormatIsInvalid(string creditCardNumber)
+    public void InvoiceCreditCardNumber_ShouldReturnFailure_WhenNumberFormatIsInvalid(string creditCardNumber)
     {
-        // Act & Assert
-        var act = () => new InvoiceCreditCardNumber(creditCardNumber);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Invalid credit card number format*");
+        // Act
+        var result = InvoiceCreditCardNumber.Create(creditCardNumber);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Invalid credit card number format");
     }
 }

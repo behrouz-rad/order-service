@@ -13,22 +13,35 @@ public class InvoiceEmailAddressTests
     public void InvoiceEmailAddress_ShouldCreateValidEmailAddress_WhenValidEmailProvided(string email)
     {
         // Act
-        var invoiceEmail = new InvoiceEmailAddress(email);
+        var result = InvoiceEmailAddress.Create(email);
 
         // Assert
-        invoiceEmail.Value.Should().Be(email.ToLowerInvariant());
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Value.Should().Be(email.ToLowerInvariant());
+    }
+
+    [Fact]
+    public void InvoiceEmailAddress_ShouldReturnFailure_WhenEmailIsNull()
+    {
+        // Act
+        var result = InvoiceEmailAddress.Create(null!);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Email address cannot be null or empty");
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData(null)]
-    public void InvoiceEmailAddress_ShouldThrowArgumentException_WhenEmailIsNullOrEmpty(string email)
+    public void InvoiceEmailAddress_ShouldReturnFailure_WhenEmailIsNullOrEmpty(string? email)
     {
-        // Act & Assert
-        var act = () => new InvoiceEmailAddress(email);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Email address cannot be null or empty*");
+        // Act
+        var result = InvoiceEmailAddress.Create(email!);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Email address cannot be null or empty");
     }
 
     [Theory]
@@ -36,11 +49,13 @@ public class InvoiceEmailAddressTests
     [InlineData("@domain.com")]
     [InlineData("user@")]
     [InlineData("user.domain.com")]
-    public void InvoiceEmailAddress_ShouldThrowArgumentException_WhenEmailFormatIsInvalid(string email)
+    public void InvoiceEmailAddress_ShouldReturnFailure_WhenEmailFormatIsInvalid(string email)
     {
-        // Act & Assert
-        var act = () => new InvoiceEmailAddress(email);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Invalid email format*");
+        // Act
+        var result = InvoiceEmailAddress.Create(email);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.Message == "Invalid email format");
     }
 }

@@ -1,28 +1,36 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using System.Text.RegularExpressions;
+using FluentResults;
 
 namespace OrderService.Domain.ValueObjects;
 
 public partial record InvoiceCreditCardNumber
 {
-    public string Value { get; init; }
+    public string Value { get; init; } = string.Empty;
 
-    public InvoiceCreditCardNumber(string creditCardNumber)
+    private InvoiceCreditCardNumber() { }
+
+    private InvoiceCreditCardNumber(string creditCardNumber)
+    {
+        Value = creditCardNumber;
+    }
+
+    public static Result<InvoiceCreditCardNumber> Create(string creditCardNumber)
     {
         if (string.IsNullOrWhiteSpace(creditCardNumber))
         {
-            throw new ArgumentException("Credit card number cannot be null or empty", nameof(creditCardNumber));
+            return Result.Fail(new Error("Credit card number cannot be null or empty"));
         }
 
         var cleanNumber = creditCardNumber.Replace("-", "").Replace(" ", "");
 
         if (!IsValidCreditCardNumber(cleanNumber))
         {
-            throw new ArgumentException("Invalid credit card number format", nameof(creditCardNumber));
+            return Result.Fail(new Error("Invalid credit card number format"));
         }
 
-        Value = creditCardNumber;
+        return Result.Ok(new InvoiceCreditCardNumber(creditCardNumber));
     }
 
     private static bool IsValidCreditCardNumber(string creditCardNumber)

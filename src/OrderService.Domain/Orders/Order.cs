@@ -1,5 +1,6 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
+using FluentResults;
 using OrderService.Domain.ValueObjects;
 
 namespace OrderService.Domain.Orders;
@@ -18,31 +19,63 @@ public class Order
 
     private Order() { }
 
-    public Order(
+    private Order(
         string orderNumber,
         InvoiceAddress invoiceAddress,
         InvoiceEmailAddress invoiceEmailAddress,
         InvoiceCreditCardNumber invoiceCreditCardNumber,
         IEnumerable<OrderItem> orderItems)
     {
+        Id = Guid.CreateVersion7();
+        OrderNumber = orderNumber;
+        CreatedAt = DateTime.UtcNow;
+        InvoiceAddress = invoiceAddress;
+        InvoiceEmailAddress = invoiceEmailAddress;
+        InvoiceCreditCardNumber = invoiceCreditCardNumber;
+
+        _orderItems.AddRange(orderItems);
+    }
+
+    public static Result<Order> Create(
+        string orderNumber,
+        InvoiceAddress invoiceAddress,
+        InvoiceEmailAddress invoiceEmailAddress,
+        InvoiceCreditCardNumber invoiceCreditCardNumber,
+        IEnumerable<OrderItem> orderItems)
+    {
+        var errors = new List<IError>();
+
         if (string.IsNullOrWhiteSpace(orderNumber))
         {
-            throw new ArgumentException("Order number cannot be null or empty", nameof(orderNumber));
+            errors.Add(new Error("Order number cannot be null or empty"));
         }
 
         if (orderItems?.Any() is not true)
         {
-            throw new ArgumentException("Order must contain at least one item", nameof(orderItems));
+            errors.Add(new Error("Order must contain at least one item"));
         }
 
-        Id = Guid.CreateVersion7();
-        OrderNumber = orderNumber;
-        CreatedAt = DateTime.UtcNow;
-        InvoiceAddress = invoiceAddress ?? throw new ArgumentNullException(nameof(invoiceAddress));
-        InvoiceEmailAddress = invoiceEmailAddress ?? throw new ArgumentNullException(nameof(invoiceEmailAddress));
-        InvoiceCreditCardNumber = invoiceCreditCardNumber ?? throw new ArgumentNullException(nameof(invoiceCreditCardNumber));
+        if (invoiceAddress is null)
+        {
+            errors.Add(new Error("Invoice address is required"));
+        }
 
-        _orderItems.AddRange(orderItems);
+        if (invoiceEmailAddress is null)
+        {
+            errors.Add(new Error("Invoice email address is required"));
+        }
+
+        if (invoiceCreditCardNumber is null)
+        {
+            errors.Add(new Error("Invoice credit card number is required"));
+        }
+
+        if (errors.Count != 0)
+        {
+            return Result.Fail(errors);
+        }
+
+        return Result.Ok(new Order(orderNumber, invoiceAddress!, invoiceEmailAddress!, invoiceCreditCardNumber!, orderItems!));
     }
 
     public void AddOrderItem(OrderItem orderItem)

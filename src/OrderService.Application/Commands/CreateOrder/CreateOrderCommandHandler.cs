@@ -45,19 +45,58 @@ public class CreateOrderCommandHandler(
 
             var orderNumber = GenerateOrderNumber();
 
-            var invoiceAddress = new InvoiceAddress(request.OrderDto.InvoiceAddress);
-            var invoiceEmailAddress = new InvoiceEmailAddress(request.OrderDto.InvoiceEmailAddress);
-            var invoiceCreditCardNumber = new InvoiceCreditCardNumber(request.OrderDto.InvoiceCreditCardNumber);
+            var invoiceAddressResult = InvoiceAddress.Create(request.OrderDto.InvoiceAddress);
+            if (invoiceAddressResult.IsFailed)
+            {
+                logger.LogWarning("Invalid invoice address: {Errors}", string.Join(", ", invoiceAddressResult.Errors.Select(e => e.Message)));
+                return Result.Fail(new Error($"Invalid order data: {string.Join(", ", invoiceAddressResult.Errors.Select(e => e.Message))}")
+                             .WithMetadata("ErrorType", ErrorType.ValidationError));
+            }
 
-            var orderItems = request.OrderDto.Products.ConvertAll(p =>
-                new OrderItem(p.ProductId, p.ProductName, p.ProductAmount, p.ProductPrice));
+            var invoiceEmailAddressResult = InvoiceEmailAddress.Create(request.OrderDto.InvoiceEmailAddress);
+            if (invoiceEmailAddressResult.IsFailed)
+            {
+                logger.LogWarning("Invalid invoice email address: {Errors}", string.Join(", ", invoiceEmailAddressResult.Errors.Select(e => e.Message)));
+                return Result.Fail(new Error($"Invalid order data: {string.Join(", ", invoiceEmailAddressResult.Errors.Select(e => e.Message))}")
+                             .WithMetadata("ErrorType", ErrorType.ValidationError));
+            }
 
-            var order = new Order(
+            var invoiceCreditCardNumberResult = InvoiceCreditCardNumber.Create(request.OrderDto.InvoiceCreditCardNumber);
+            if (invoiceCreditCardNumberResult.IsFailed)
+            {
+                logger.LogWarning("Invalid invoice credit card number: {Errors}", string.Join(", ", invoiceCreditCardNumberResult.Errors.Select(e => e.Message)));
+                return Result.Fail(new Error($"Invalid order data: {string.Join(", ", invoiceCreditCardNumberResult.Errors.Select(e => e.Message))}")
+                             .WithMetadata("ErrorType", ErrorType.ValidationError));
+            }
+
+            var orderItems = new List<OrderItem>();
+            foreach (var product in request.OrderDto.Products)
+            {
+                var orderItemResult = OrderItem.Create(product.ProductId, product.ProductName, product.ProductAmount, product.ProductPrice);
+                if (orderItemResult.IsFailed)
+                {
+                    logger.LogWarning("Invalid order item: {Errors}", string.Join(", ", orderItemResult.Errors.Select(e => e.Message)));
+                    return Result.Fail(new Error($"Invalid order data: {string.Join(", ", orderItemResult.Errors.Select(e => e.Message))}")
+                                 .WithMetadata("ErrorType", ErrorType.ValidationError));
+                }
+                orderItems.Add(orderItemResult.Value);
+            }
+
+            var orderResult = Order.Create(
                 orderNumber,
-                invoiceAddress,
-                invoiceEmailAddress,
-                invoiceCreditCardNumber,
+                invoiceAddressResult.Value,
+                invoiceEmailAddressResult.Value,
+                invoiceCreditCardNumberResult.Value,
                 orderItems);
+
+            if (orderResult.IsFailed)
+            {
+                logger.LogWarning("Invalid order: {Errors}", string.Join(", ", orderResult.Errors.Select(e => e.Message)));
+                return Result.Fail(new Error($"Invalid order data: {string.Join(", ", orderResult.Errors.Select(e => e.Message))}")
+                             .WithMetadata("ErrorType", ErrorType.ValidationError));
+            }
+
+            var order = orderResult.Value;
 
             await orderRepository.AddAsync(order, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -183,7 +183,7 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
         var loadedOrder = await context.Orders.FindAsync(order.Id);
         loadedOrder.Should().NotBeNull();
         loadedOrder!.OrderNumber.Should().Be(orderNumber);
-        loadedOrder!.InvoiceAddress.Should().BeEquivalentTo(new InvoiceAddress("9 Street, Karlsruhe"));
+        loadedOrder!.InvoiceAddress.Should().BeEquivalentTo(InvoiceAddress.Create("9 Street, Karlsruhe").Value);
 
         // Cleanup
         await context.Orders.Where(o => o.Id == order.Id).ExecuteDeleteAsync();
@@ -215,31 +215,31 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
     {
         var orderItems = new List<OrderItem>
         {
-            new("PROD-001", "Sample Product", 2, 99.99m)
+            OrderItem.Create("PROD-001", "Sample Product", 2, 99.99m).Value
         };
 
-        return new Order(
+        return Order.Create(
             orderNumber,
-            new InvoiceAddress("123 Sample Street, Berlin"),
-            new InvoiceEmailAddress("test@example.com"),
-            new InvoiceCreditCardNumber("1234-5678-9101-1121"),
+            InvoiceAddress.Create("123 Sample Street, Berlin").Value,
+            InvoiceEmailAddress.Create("test@example.com").Value,
+            InvoiceCreditCardNumber.Create("1234-5678-9101-1121").Value,
             orderItems
-        );
+        ).Value;
     }
 
     private static Order CreateSampleOrderWithAddress(string address, string orderNumber = "ORD-001")
     {
         var orderItems = new List<OrderItem>
         {
-            new("PROD-001", "Sample Product", 2, 99.99m)
+            OrderItem.Create("PROD-001", "Sample Product", 2, 99.99m).Value
         };
 
-        return new Order(
+        return Order.Create(
             orderNumber,
-            new InvoiceAddress(address),
-            new InvoiceEmailAddress("test@example.com"),
-            new InvoiceCreditCardNumber("1234-5678-9101-1121"),
+            InvoiceAddress.Create(address).Value,
+            InvoiceEmailAddress.Create("test@example.com").Value,
+            InvoiceCreditCardNumber.Create("1234-5678-9101-1121").Value,
             orderItems
-        );
+        ).Value;
     }
 }

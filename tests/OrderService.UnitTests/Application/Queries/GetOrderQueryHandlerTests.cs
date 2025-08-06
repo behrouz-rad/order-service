@@ -97,14 +97,14 @@ public class GetOrderQueryHandlerTests
     {
         var orderItems = new List<OrderItem>
         {
-            new("12345", "Gaming Laptop", 2, 1499.99m)
+            OrderItem.Create("12345", "Gaming Laptop", 2, 1499.99m).Value
         };
 
-        return new Order(
+        return Order.Create(
             orderNumber,
-            new InvoiceAddress("123 Sample Street, 90402 Berlin"),
-            new InvoiceEmailAddress("customer@example.com"),
-            new InvoiceCreditCardNumber("1234-5678-9101-1121"),
-            orderItems);
+            InvoiceAddress.Create("123 Sample Street, 90402 Berlin").Value,
+            InvoiceEmailAddress.Create("customer@example.com").Value,
+            InvoiceCreditCardNumber.Create("1234-5678-9101-1121").Value,
+            orderItems).Value;
     }
 }

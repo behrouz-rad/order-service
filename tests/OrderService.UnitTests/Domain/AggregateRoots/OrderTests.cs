@@ -39,7 +39,7 @@ public class OrderTests
                 "123 Sample Street, 90402 Berlin",
                 "customer@example.com",
                 "1234-5678-9101-1121",
-                new List<OrderItem> { new("12345", "Gaming Laptop", 2, 1499.99m) }
+                new List<OrderItem> { OrderItem.Create("12345", "Gaming Laptop", 2, 1499.99m).Value }
             ),
             new ValidOrderTestCase(
                 "Multiple items order with different address",
@@ -49,8 +49,8 @@ public class OrderTests
                 "9876-5432-1098-7654",
                 new List<OrderItem>
                 {
-                    new("67890", "Wireless Mouse", 1, 29.99m),
-                    new("54321", "Mechanical Keyboard", 1, 129.99m)
+                    OrderItem.Create("67890", "Wireless Mouse", 1, 29.99m).Value,
+                    OrderItem.Create("54321", "Mechanical Keyboard", 1, 129.99m).Value
                 }
             )
         ];
@@ -60,14 +60,16 @@ public class OrderTests
     public void Order_ShouldCreateValidOrder_WhenValidDataProvided(ValidOrderTestCase testCase)
     {
         // Arrange
-        var invoiceAddress = new InvoiceAddress(testCase.AddressValue);
-        var invoiceEmailAddress = new InvoiceEmailAddress(testCase.EmailValue);
-        var invoiceCreditCardNumber = new InvoiceCreditCardNumber(testCase.CreditCardValue);
+        var invoiceAddressResult = InvoiceAddress.Create(testCase.AddressValue);
+        var invoiceEmailAddressResult = InvoiceEmailAddress.Create(testCase.EmailValue);
+        var invoiceCreditCardNumberResult = InvoiceCreditCardNumber.Create(testCase.CreditCardValue);
 
         // Act
-        var order = new Order(testCase.OrderNumber, invoiceAddress, invoiceEmailAddress, invoiceCreditCardNumber, testCase.OrderItems);
+        var orderResult = Order.Create(testCase.OrderNumber, invoiceAddressResult.Value, invoiceEmailAddressResult.Value, invoiceCreditCardNumberResult.Value, testCase.OrderItems);
 
         // Assert
+        orderResult.IsSuccess.Should().BeTrue();
+        var order = orderResult.Value;
         order.Should().NotBeNull();
         order.OrderNumber.Should().Be(testCase.OrderNumber);
         order.InvoiceAddress.Value.Should().Be(testCase.AddressValue);
@@ -85,7 +87,7 @@ public class OrderTests
                 "123 Sample Street, 90402 Berlin",
                 "customer@example.com",
                 "1234-5678-9101-1121",
-                new List<OrderItem> { new("12345", "Gaming Laptop", 1, 1499.99m) },
+                new List<OrderItem> { OrderItem.Create("12345", "Gaming Laptop", 1, 1499.99m).Value },
                 "Order number cannot be null or empty*"
             ),
             new InvalidOrderTestCase(
@@ -94,7 +96,7 @@ public class OrderTests
                 "123 Sample Street, 90402 Berlin",
                 "customer@example.com",
                 "1234-5678-9101-1121",
-                new List<OrderItem> { new("12345", "Gaming Laptop", 1, 1499.99m) },
+                new List<OrderItem> { OrderItem.Create("12345", "Gaming Laptop", 1, 1499.99m).Value },
                 "Order number cannot be null or empty*"
             ),
             new InvalidOrderTestCase(
@@ -119,16 +121,18 @@ public class OrderTests
 
     [Theory]
     [MemberData(nameof(InvalidOrderData))]
-    public void Order_ShouldThrowArgumentException_WhenInvalidDataProvided(InvalidOrderTestCase testCase)
+    public void Order_ShouldReturnFailure_WhenInvalidDataProvided(InvalidOrderTestCase testCase)
     {
         // Arrange
-        var invoiceAddress = new InvoiceAddress(testCase.AddressValue);
-        var invoiceEmailAddress = new InvoiceEmailAddress(testCase.EmailValue);
-        var invoiceCreditCardNumber = new InvoiceCreditCardNumber(testCase.CreditCardValue);
+        var invoiceAddressResult = InvoiceAddress.Create(testCase.AddressValue);
+        var invoiceEmailAddressResult = InvoiceEmailAddress.Create(testCase.EmailValue);
+        var invoiceCreditCardNumberResult = InvoiceCreditCardNumber.Create(testCase.CreditCardValue);
 
-        // Act & Assert
-        var act = () => new Order(testCase.OrderNumber!, invoiceAddress, invoiceEmailAddress, invoiceCreditCardNumber, testCase.OrderItems!);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage(testCase.ExpectedErrorMessage);
+        // Act
+        var orderResult = Order.Create(testCase.OrderNumber!, invoiceAddressResult.Value, invoiceEmailAddressResult.Value, invoiceCreditCardNumberResult.Value, testCase.OrderItems!);
+
+        // Assert
+        orderResult.IsFailed.Should().BeTrue();
+        orderResult.Errors.Should().NotBeEmpty();
     }
 }

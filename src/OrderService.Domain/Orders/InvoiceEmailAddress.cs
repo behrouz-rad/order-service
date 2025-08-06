@@ -1,26 +1,34 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using System.Text.RegularExpressions;
+using FluentResults;
 
 namespace OrderService.Domain.ValueObjects;
 
 public partial record InvoiceEmailAddress
 {
-    public string Value { get; init; }
+    public string Value { get; init; } = string.Empty;
 
-    public InvoiceEmailAddress(string email)
+    private InvoiceEmailAddress() { }
+
+    private InvoiceEmailAddress(string email)
+    {
+        Value = email.ToLowerInvariant();
+    }
+
+    public static Result<InvoiceEmailAddress> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
         {
-            throw new ArgumentException("Email address cannot be null or empty", nameof(email));
+            return Result.Fail(new Error("Email address cannot be null or empty"));
         }
 
         if (!IsValidEmail(email))
         {
-            throw new ArgumentException("Invalid email format", nameof(email));
+            return Result.Fail(new Error("Invalid email format"));
         }
 
-        Value = email.ToLowerInvariant();
+        return Result.Ok(new InvoiceEmailAddress(email));
     }
 
     private static bool IsValidEmail(string email)
