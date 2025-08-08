@@ -12,7 +12,7 @@ using OrderService.Domain.Orders;
 using OrderService.Domain.Repositories;
 
 namespace OrderService.UnitTests.Application.Commands;
-public class CreateOrderCommandHandlerTests
+public class CreateOrderCommandHandlerTests : BaseUnitTest
 {
     private readonly Mock<IOrderRepository> _mockOrderRepository;
     private readonly Mock<IStockValidationService> _mockStockValidationService;

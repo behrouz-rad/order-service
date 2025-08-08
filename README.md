@@ -9,7 +9,7 @@ Order Service is a microservice designed to manage customer orders, including or
 ## Technology Stack
 
 - **Language:** C# (.NET 9)
-- **Frameworks/Libraries:** ASP.NET Core, Entity Framework Core, MediatR, FluentResults, FluentValidation, Serilog (structured logging), Polly
+- **Frameworks/Libraries:** ASP.NET Core, Entity Framework Core, MediatR, FluentResults, FluentValidation, Mapster, Serilog (structured logging), Polly
 - **Database:** SQL Server (via EF Core)
 - **Testing:** xUnit, Moq, FluentAssertions
 - **API Documentation:** Swagger/OpenAPI
@@ -28,6 +28,7 @@ The project follows a **Domain-Driven Design (DDD)** and **Clean Architecture** 
 - **Separation of Concerns:** Each layer has a clear responsibility, improving maintainability and testability.
 - **MediatR for CQRS:** Commands and queries are handled via MediatR, decoupling request handling from controllers.
 - **FluentResults:** Standardizes operation results and error handling across layers.
+- **Mapster for Object Mapping:** Provides high-performance, type-safe mapping between domain entities and DTOs, eliminating manual mapping boilerplate code.
 - **Exception Handling:** Centralized via custom middleware for consistent API error responses.
 - **Database Migrations:** Managed via EF Core with automated migration support at startup.
 
@@ -43,14 +44,16 @@ The project follows a **Domain-Driven Design (DDD)** and **Clean Architecture** 
 1. **API Controller** receives a request and constructs a command/query.
 2. **MediatR** dispatches the command/query to the appropriate handler in the Application layer.
 3. **Handlers** coordinate domain logic and interact with repositories/services.
-4. **Infrastructure** persists/retrieves data via EF Core.
-5. **Results** are returned up the stack, with errors handled uniformly.
+4. **Mapster** automatically maps between domain entities and DTOs using configured mapping rules.
+5. **Infrastructure** persists/retrieves data via EF Core.
+6. **Results** are returned up the stack, with errors handled uniformly.
 
 ## Rationale for Architectural Choices
 
 - **DDD & Layered Architecture:** Promotes a clear separation between business logic and infrastructure, making the system easier to evolve and test.
 - **CQRS with MediatR:** Decouples read/write operations and simplifies handler testing.
 - **FluentResults & Centralized Error Handling:** Ensures consistent error reporting and easier client integration.
+- **Mapster Object Mapping:** Eliminates manual DTO mapping code, provides compile-time safety, and delivers high performance through generated mapping code. Centralized mapping configuration in the Application layer ensures consistency and maintainability.
 - **Serilog Structured Logging:** Structured logs enable advanced querying, filtering, and correlation of log data, making troubleshooting and monitoring more effective, especially in distributed or production environments.
 - **EF Core & Automated Migrations:** Simplifies database management.
 - **Comprehensive Testing:** Ensures reliability and supports safe refactoring.

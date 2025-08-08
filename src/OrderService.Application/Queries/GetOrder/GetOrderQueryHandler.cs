@@ -1,6 +1,7 @@
 ﻿// © 2025 Behrouz Rad. All rights reserved.
 
 using FluentResults;
+using Mapster;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OrderService.Application.DTOs;
@@ -25,21 +26,7 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository, ILogger<GetO
                              .WithMetadata("ErrorType", ErrorType.NotFound));
             }
 
-            var orderDto = new OrderDto
-            {
-                OrderNumber = order.OrderNumber,
-                InvoiceAddress = order.InvoiceAddress.Value,
-                InvoiceEmailAddress = order.InvoiceEmailAddress.Value,
-                InvoiceCreditCardNumber = order.InvoiceCreditCardNumber.Value,
-                CreatedAt = order.CreatedAt,
-                Products = [.. order.OrderItems.Select(item => new OrderItemDto
-                {
-                    ProductId = item.ProductId,
-                    ProductName = item.ProductName,
-                    ProductAmount = item.ProductAmount,
-                    ProductPrice = item.ProductPrice
-                })]
-            };
+            var orderDto = order.Adapt<OrderDto>();
 
             logger.LogInformation("Order {OrderNumber} retrieved successfully", request.OrderNumber);
             return Result.Ok(orderDto);

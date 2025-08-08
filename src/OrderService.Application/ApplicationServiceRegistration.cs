@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using FluentValidation;
+using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace OrderService.Application;
@@ -15,6 +16,10 @@ public static class ApplicationServiceRegistration
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
 
         services.AddValidatorsFromAssembly(assembly);
+
+        var config = TypeAdapterConfig.GlobalSettings;
+        config.Scan(assembly);
+        services.AddSingleton(config);
 
         return services;
     }

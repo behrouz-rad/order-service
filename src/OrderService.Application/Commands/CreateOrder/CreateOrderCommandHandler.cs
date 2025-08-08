@@ -2,6 +2,7 @@
 
 using System.Globalization;
 using FluentResults;
+using Mapster;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OrderService.Application.DTOs;
@@ -72,21 +73,7 @@ public class CreateOrderCommandHandler(
 
         logger.LogInformation("Order {OrderNumber} created successfully", order.OrderNumber);
 
-        var orderDto = new OrderDto
-        {
-            OrderNumber = order.OrderNumber,
-            InvoiceAddress = order.InvoiceAddress.Value,
-            InvoiceEmailAddress = order.InvoiceEmailAddress.Value,
-            InvoiceCreditCardNumber = order.InvoiceCreditCardNumber.Value,
-            CreatedAt = order.CreatedAt,
-            Products = [.. order.OrderItems.Select(item => new OrderItemDto
-                {
-                    ProductId = item.ProductId,
-                    ProductName = item.ProductName,
-                    ProductAmount = item.ProductAmount,
-                    ProductPrice = item.ProductPrice
-                })]
-        };
+        var orderDto = order.Adapt<OrderDto>();
 
         return Result.Ok(orderDto);
 
