@@ -69,8 +69,8 @@ public class CreateOrderCommandHandlerTests
         result.Value.InvoiceEmailAddress.Should().Be("customer@example.com");
         result.Value.InvoiceCreditCardNumber.Should().Be("1234-5678-9101-1121");
         result.Value.Products.Should().HaveCount(1);
-        result.Value.Products[0].ProductId.Should().Be("12345");
-        result.Value.Products[0].ProductName.Should().Be("Gaming Laptop");
+        result.Value.Products.First().ProductId.Should().Be("12345");
+        result.Value.Products.First().ProductName.Should().Be("Gaming Laptop");
 
         _mockOrderRepository.Verify(x => x.AddAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);

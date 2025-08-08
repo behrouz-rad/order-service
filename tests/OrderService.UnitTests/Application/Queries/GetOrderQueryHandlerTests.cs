@@ -46,7 +46,7 @@ public class GetOrderQueryHandlerTests
         result.Value.InvoiceAddress.Should().Be("123 Sample Street, 90402 Berlin");
         result.Value.InvoiceEmailAddress.Should().Be("customer@example.com");
         result.Value.Products.Should().HaveCount(1);
-        result.Value.Products[0].ProductId.Should().Be("12345");
+        result.Value.Products.First().ProductId.Should().Be("12345");
     }
 
     [Fact]

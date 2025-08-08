@@ -9,7 +9,7 @@ public class Order
 {
     public Guid Id { get; private set; }
     public string OrderNumber { get; private set; } = string.Empty;
-    public DateTime CreatedAt { get; private set; }
+    public DateTimeOffset CreatedAt { get; private set; }
     public InvoiceAddress InvoiceAddress { get; private set; } = null!;
     public InvoiceEmailAddress InvoiceEmailAddress { get; private set; } = null!;
     public InvoiceCreditCardNumber InvoiceCreditCardNumber { get; private set; } = null!;
@@ -28,7 +28,6 @@ public class Order
     {
         Id = Guid.CreateVersion7();
         OrderNumber = orderNumber;
-        CreatedAt = DateTime.UtcNow;
         InvoiceAddress = invoiceAddress;
         InvoiceEmailAddress = invoiceEmailAddress;
         InvoiceCreditCardNumber = invoiceCreditCardNumber;
@@ -76,6 +75,11 @@ public class Order
         }
 
         return Result.Ok(new Order(orderNumber, invoiceAddress!, invoiceEmailAddress!, invoiceCreditCardNumber!, orderItems!));
+    }
+
+    internal void SetCreatedAt(DateTimeOffset createdAt)
+    {
+        CreatedAt = createdAt;
     }
 
     public void AddOrderItem(OrderItem orderItem)

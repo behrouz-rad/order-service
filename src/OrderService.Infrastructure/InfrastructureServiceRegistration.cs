@@ -7,6 +7,7 @@ using OrderService.Application.Persistence;
 using OrderService.Application.Services;
 using OrderService.Domain.Repositories;
 using OrderService.Infrastructure.Data;
+using OrderService.Infrastructure.Interceptors;
 using OrderService.Infrastructure.Repositories;
 using OrderService.Infrastructure.Services;
 
@@ -19,7 +20,8 @@ public static class InfrastructureServiceRegistration
         services.AddDbContext<OrderDbContext>(options =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
-                builder => builder.MigrationsAssembly("OrderService.Api")));
+                builder => builder.MigrationsAssembly("OrderService.Api"))
+            .AddInterceptors(new CreatedAtInterceptor()));
 
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<OrderDbContext>());
         services.AddScoped<IDatabaseMigrationService, DatabaseMigrationService>();

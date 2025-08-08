@@ -77,7 +77,7 @@ public sealed class OrderTests
         order.InvoiceEmailAddress.Value.Should().Be(testCase.EmailValue);
         order.InvoiceCreditCardNumber.Value.Should().Be(testCase.CreditCardValue);
         order.OrderItems.Should().HaveCount(testCase.OrderItems.Count);
-        order.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        order.CreatedAt.Should().Be(default); // CreatedAt is set by EF interceptor, not in factory
     }
 
     public static TheoryData<InvalidOrderTestCase> InvalidOrderData =>
@@ -168,7 +168,7 @@ public sealed class OrderTests
         order.OrderItems.First().ProductName.Should().Be("Factory Product");
         order.OrderItems.First().ProductAmount.Should().Be(3);
         order.OrderItems.First().ProductPrice.Should().Be(299.99m);
-        order.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        order.CreatedAt.Should().Be(default); // CreatedAt is set by EF interceptor, not in factory
     }
 
     [Fact]

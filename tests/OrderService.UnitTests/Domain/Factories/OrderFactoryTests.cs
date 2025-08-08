@@ -38,7 +38,7 @@ public class OrderFactoryTests
         order.InvoiceEmailAddress.Value.Should().Be(invoiceEmailAddress.ToLowerInvariant());
         order.InvoiceCreditCardNumber.Value.Should().Be(invoiceCreditCardNumber);
         order.OrderItems.Should().HaveCount(2);
-        order.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        order.CreatedAt.Should().Be(default); // CreatedAt is set by EF interceptor, not in factory
     }
 
     [Fact]
