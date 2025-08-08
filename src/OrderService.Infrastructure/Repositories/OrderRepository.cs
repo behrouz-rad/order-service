@@ -4,16 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using OrderService.Application.Persistence;
 using OrderService.Domain.Orders;
 using OrderService.Domain.Repositories;
+using OrderService.Infrastructure.Data;
 
 namespace OrderService.Infrastructure.Repositories;
 
-public class OrderRepository(IUnitOfWork unitOfWork) : IOrderRepository
+public class OrderRepository(OrderDbContext dbContext) : IOrderRepository
 {
-    private readonly DbSet<Order> _orders = unitOfWork.DbSet<Order>();
+    private readonly DbSet<Order> _orders = dbContext.Set<Order>();
 
     public ValueTask<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return _orders.FindAsync(id, cancellationToken);
+        return _orders.FindAsync([id], cancellationToken);
     }
 
     public async Task<Order?> GetByOrderNumberAsync(string orderNumber, CancellationToken cancellationToken = default)
