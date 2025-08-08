@@ -3,10 +3,11 @@
 using FluentAssertions;
 using OrderService.Domain.Orders;
 using OrderService.Domain.ValueObjects;
+using OrderService.UnitTests.Domain.Extensions;
 
 namespace OrderService.UnitTests.Domain.AggregateRoots;
 
-public record ValidOrderTestCase(
+public sealed record ValidOrderTestCase(
     string TestName,
     string OrderNumber,
     string AddressValue,
@@ -17,7 +18,7 @@ public record ValidOrderTestCase(
     public override string ToString() => TestName;
 }
 
-public record InvalidOrderTestCase(
+public sealed record InvalidOrderTestCase(
     string TestName,
     string? OrderNumber,
     string AddressValue,
@@ -29,7 +30,7 @@ public record InvalidOrderTestCase(
     public override string ToString() => TestName;
 }
 
-public class OrderTests
+public sealed class OrderTests
 {
     public static TheoryData<ValidOrderTestCase> ValidOrderData =>
         [
@@ -134,5 +135,74 @@ public class OrderTests
         // Assert
         orderResult.IsFailed.Should().BeTrue();
         orderResult.Errors.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void OrderFactory_ShouldCreateValidOrder_WhenValidDataProvided()
+    {
+        // Arrange
+        const string orderNumber = "20250801-FACTORY123";
+        const string invoiceAddress = "123 Factory Street, 90402 Berlin";
+        const string invoiceEmailAddress = "factory@example.com";
+        const string invoiceCreditCardNumber = "1234-5678-9101-1121";
+        var orderItems = new[] { ("F123", "Factory Product", 3, 299.99m) };
+
+        // Act
+        var result = OrderFactory.Create(
+            orderNumber,
+            invoiceAddress,
+            invoiceEmailAddress,
+            invoiceCreditCardNumber,
+            orderItems);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        var order = result.Value;
+        order.Should().NotBeNull();
+        order.OrderNumber.Should().Be(orderNumber);
+        order.InvoiceAddress.Value.Should().Be(invoiceAddress);
+        order.InvoiceEmailAddress.Value.Should().Be(invoiceEmailAddress.ToLowerInvariant());
+        order.InvoiceCreditCardNumber.Value.Should().Be(invoiceCreditCardNumber);
+        order.OrderItems.Should().HaveCount(1);
+        order.OrderItems.First().ProductId.Should().Be("F123");
+        order.OrderItems.First().ProductName.Should().Be("Factory Product");
+        order.OrderItems.First().ProductAmount.Should().Be(3);
+        order.OrderItems.First().ProductPrice.Should().Be(299.99m);
+        order.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public void OrderTestExtensions_ShouldCreateValidOrderWithDefaults()
+    {
+        // Act
+        var order = OrderTestExtensions.CreateTestOrder();
+
+        // Assert
+        order.Should().NotBeNull();
+        order.OrderNumber.Should().Be("TEST-001");
+        order.InvoiceAddress.Value.Should().Be("123 Test Street, 90210 Test City");
+        order.InvoiceEmailAddress.Value.Should().Be("test@example.com");
+        order.InvoiceCreditCardNumber.Value.Should().Be("1234-5678-9101-1121");
+        order.OrderItems.Should().HaveCount(1);
+        order.OrderItems.First().ProductId.Should().Be("TEST-001");
+    }
+
+    [Fact]
+    public void OrderTestExtensions_ShouldCreateOrderWithCustomItems()
+    {
+        // Act
+        var order = OrderTestExtensions.CreateTestOrder(
+            "CUSTOM-123",
+            "123 Test Street, 90210 Test City",
+            "test@example.com",
+            "1234-5678-9101-1121",
+            ("ITEM-1", "First Item", 2, 50.0m),
+            ("ITEM-2", "Second Item", 1, 75.0m));
+
+        // Assert
+        order.OrderNumber.Should().Be("CUSTOM-123");
+        order.OrderItems.Should().HaveCount(2);
+        order.OrderItems.Should().Contain(i => i.ProductId == "ITEM-1" && i.ProductAmount == 2);
+        order.OrderItems.Should().Contain(i => i.ProductId == "ITEM-2" && i.ProductAmount == 1);
     }
 }

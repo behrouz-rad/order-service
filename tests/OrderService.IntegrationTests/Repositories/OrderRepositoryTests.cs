@@ -199,12 +199,12 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
 
         var orderNumber = $"ORD-DELETE-{Guid.CreateVersion7():N}";
         var order = CreateSampleOrder(orderNumber);
-        await context.Orders.AddAsync(order);
-        await context.SaveChangesAsync();
+        await context.Orders.AddAsync(order, CancellationToken.None);
+        await context.SaveChangesAsync(CancellationToken.None);
 
         // Act
-        await repository.DeleteAsync(order);
-        await context.SaveChangesAsync();
+        await repository.DeleteAsync(order, CancellationToken.None);
+        await context.SaveChangesAsync(CancellationToken.None);
 
         // Assert
         var deletedOrder = await context.Orders.FindAsync(order.Id);
@@ -213,32 +213,26 @@ public class OrderRepositoryTests(OrderWebApplicationFactory factory) : IClassFi
 
     private static Order CreateSampleOrder(string orderNumber = "ORD-001")
     {
-        var orderItems = new List<OrderItem>
-        {
-            OrderItem.Create("PROD-001", "Sample Product", 2, 99.99m).Value
-        };
+        var orderItems = new[] { ("PROD-001", "Sample Product", 2, 99.99m) };
 
-        return Order.Create(
+        return OrderFactory.Create(
             orderNumber,
-            InvoiceAddress.Create("123 Sample Street, Berlin").Value,
-            InvoiceEmailAddress.Create("test@example.com").Value,
-            InvoiceCreditCardNumber.Create("1234-5678-9101-1121").Value,
+            "123 Sample Street, Berlin",
+            "test@example.com",
+            "1234-5678-9101-1121",
             orderItems
         ).Value;
     }
 
     private static Order CreateSampleOrderWithAddress(string address, string orderNumber = "ORD-001")
     {
-        var orderItems = new List<OrderItem>
-        {
-            OrderItem.Create("PROD-001", "Sample Product", 2, 99.99m).Value
-        };
+        var orderItems = new[] { ("PROD-001", "Sample Product", 2, 99.99m) };
 
-        return Order.Create(
+        return OrderFactory.Create(
             orderNumber,
-            InvoiceAddress.Create(address).Value,
-            InvoiceEmailAddress.Create("test@example.com").Value,
-            InvoiceCreditCardNumber.Create("1234-5678-9101-1121").Value,
+            address,
+            "test@example.com",
+            "1234-5678-9101-1121",
             orderItems
         ).Value;
     }

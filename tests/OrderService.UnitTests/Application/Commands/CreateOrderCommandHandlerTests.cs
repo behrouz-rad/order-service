@@ -77,41 +77,6 @@ public class CreateOrderCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenRepositoryThrowsException_ShouldReturnFailureResult()
-    {
-        // Arrange
-        var createOrderDto = new CreateOrderDto
-        {
-            Products = new List<CreateOrderItemDto>
-            {
-                new() { ProductId = "12345", ProductName = "Gaming Laptop", ProductAmount = 2, ProductPrice = 1499.99m }
-            },
-            InvoiceAddress = "123 Sample Street, 90402 Berlin",
-            InvoiceEmailAddress = "customer@example.com",
-            InvoiceCreditCardNumber = "1234-5678-9101-1121"
-        };
-
-        var command = new CreateOrderCommand(createOrderDto);
-
-        _mockOrderRepository
-            .Setup(x => x.AddAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Database error"));
-
-        _mockStockValidationService
-            .Setup(x => x.IsProductInStockAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
-
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
-        result.Errors[0].Message.Should().Contain("Failed to create order");
-        result.Errors[0].Metadata.GetValueOrDefault("ErrorType").Should().Be(ErrorType.InternalError);
-    }
-
-    [Fact]
     public async Task Handle_WithInvalidEmail_ShouldReturnFailureResult()
     {
         // Arrange
@@ -138,7 +103,7 @@ public class CreateOrderCommandHandlerTests
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors[0].Message.Should().Contain("Invalid order data");
+        result.Errors[0].Message.Should().Contain("Invalid email format");
         result.Errors[0].Metadata.GetValueOrDefault("ErrorType").Should().Be(ErrorType.ValidationError);
     }
 

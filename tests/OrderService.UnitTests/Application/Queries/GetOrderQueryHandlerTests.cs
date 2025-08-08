@@ -95,16 +95,13 @@ public class GetOrderQueryHandlerTests
 
     private static Order CreateTestOrder(string orderNumber)
     {
-        var orderItems = new List<OrderItem>
-        {
-            OrderItem.Create("12345", "Gaming Laptop", 2, 1499.99m).Value
-        };
+        var orderItems = new[] { ("12345", "Gaming Laptop", 2, 1499.99m) };
 
-        return Order.Create(
+        return OrderFactory.Create(
             orderNumber,
-            InvoiceAddress.Create("123 Sample Street, 90402 Berlin").Value,
-            InvoiceEmailAddress.Create("customer@example.com").Value,
-            InvoiceCreditCardNumber.Create("1234-5678-9101-1121").Value,
+            "123 Sample Street, 90402 Berlin",
+            "customer@example.com",
+            "1234-5678-9101-1121",
             orderItems).Value;
     }
 }
