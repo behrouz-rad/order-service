@@ -29,12 +29,6 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
                 break;
 
-            case ArgumentException argumentException:
-                problemDetails.Status = StatusCodes.Status400BadRequest;
-                problemDetails.Title = "Bad Request";
-                problemDetails.Detail = argumentException.Message;
-                break;
-
             default:
                 problemDetails.Status = StatusCodes.Status500InternalServerError;
                 problemDetails.Title = "Internal Server Error";
