@@ -10,7 +10,8 @@ builder.Services.AddApiServices()
                 .AddApiDocumentation()
                 .AddApplicationLayers(builder.Configuration)
                 .AddPipelineBehaviors()
-                .AddGlobalExceptionHandling();
+                .AddGlobalExceptionHandling()
+                .AddHealthChecks(builder.Configuration);
 
 var app = builder.Build()
                  .ConfigurePipeline();

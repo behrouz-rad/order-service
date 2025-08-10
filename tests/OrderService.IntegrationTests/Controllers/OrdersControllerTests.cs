@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace OrderService.IntegrationTests.Controllers;
 
-public class OrdersControllerTests(OrderWebApplicationFactory factory,ITestOutputHelper output) : IClassFixture<OrderWebApplicationFactory>
+public class OrdersControllerTests(OrderWebApplicationFactory factory) : IClassFixture<OrderWebApplicationFactory>
 {
     private readonly HttpClient _client = factory.CreateClient();
 
@@ -76,7 +76,7 @@ public class OrdersControllerTests(OrderWebApplicationFactory factory,ITestOutpu
 
         var createResponse = await _client.PostAsJsonAsync("/api/orders", createOrderDto);
         var createResult = await createResponse.Content.ReadFromJsonAsync<dynamic>();
-        output.WriteLine(createResponse.StatusCode.ToString());
+
         var orderNumber = createResult?.GetProperty("orderNumber").GetString();
 
         // Act

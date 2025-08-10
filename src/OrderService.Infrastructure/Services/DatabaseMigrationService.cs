@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using OrderService.Application.Persistence;
 using OrderService.Application.Services;
 using Polly;
-using static System.Console;
 
 namespace OrderService.Infrastructure.Services;
 
@@ -26,12 +25,10 @@ public class DatabaseMigrationService(IUnitOfWork unitOfWork, ILogger<DatabaseMi
         await retryPolicy.ExecuteAsync(() =>
         {
             logger.LogInformation("Starting database migration...");
-            WriteLine("Started MigrateDb");
 
             unitOfWork.Migrate(TimeSpan.FromSeconds(20));
 
             logger.LogInformation("Database migration completed successfully");
-            WriteLine("Finished MigrateDb");
 
             return Task.CompletedTask;
         });

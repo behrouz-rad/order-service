@@ -22,7 +22,18 @@ public static class ServiceCollectionExtensions
             options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         });
         services.AddProblemDetails();
-        services.AddHealthChecks();
+        
+        return services;
+    }
+
+    public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHealthChecks()
+                .AddSqlServer(
+                    connectionString: configuration.GetConnectionString("DefaultConnection")!,
+                    healthQuery: "SELECT 1;",
+                    name: "sql-server",
+                    tags: ["database", "sql-server"]);
 
         return services;
     }
