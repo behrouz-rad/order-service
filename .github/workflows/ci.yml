@@ -21,18 +21,56 @@ jobs:
         options: >-
           --health-cmd "exit 0" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
+
       - name: Restore dependencies
         run: dotnet restore OrderService.sln
+
       - name: Build
         run: dotnet build OrderService.sln --no-restore --configuration Release
-      - name: Run Unit Tests
-        run: dotnet test tests/OrderService.UnitTests/OrderService.UnitTests.csproj --no-build --configuration Release --logger trx
-      - name: Run Integration Tests
+
+      - name: Run Tests
         env:
           ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=Order_Test;User Id=sa;Password=Your_password123;TrustServerCertificate=True;"
-        run: dotnet test tests/OrderService.IntegrationTests/OrderService.IntegrationTests.csproj --no-build --configuration Release --logger trx
+        shell: pwsh
+        id: tests
+        run: |
+          $coverageDir = "coverage_dotnet"
+          $testResultsDir = "tests_dotnet"
+
+          dotnet test `
+            --configuration Release `
+            --no-build `
+            --no-restore `
+            --verbosity normal `
+            --collect:"XPlat Code Coverage;Format=opencover" `
+            --results-directory $coverageDir `
+            --logger "console;verbosity=detailed" `
+            --logger "html" `
+            --logger "trx"
+          
+          mkdir $testResultsDir
+          Get-ChildItem -Path $coverageDir -Filter *.html | Move-Item -Destination $testResultsDir
+
+          $trxDir = "trxFiles"
+          mkdir $trxDir
+          Get-ChildItem -Path $coverageDir -Filter *.trx | Move-Item -Destination $trxDir
+
+          "coverage=$coverageDir" >> $env:GITHUB_OUTPUT
+          "test-results=$testResultsDir" >> $env:GITHUB_OUTPUT
+          "trx-dir=$trxDir" >> $env:GITHUB_OUTPUT
+
+      - name: Generate GitHub step summary
+        uses: phoenix-actions/test-reporting@f957cd93fc2d848d556fa0d03c57bc79127b6b5e #v15
+        if: always()
+        with:
+          name: tests
+          path: ${{ steps.tests.outputs.trx-dir }}/**/*.trx
+          reporter: dotnet-trx
+          output-to: step-summary
